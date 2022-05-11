@@ -13,13 +13,14 @@ import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { faAngleRight } from "@fortawesome/free-solid-svg-icons";
+import { faCheck } from "@fortawesome/free-solid-svg-icons";
 
 import { faTowerBroadcast } from "@fortawesome/free-solid-svg-icons";
 import { faGlobe } from "@fortawesome/free-solid-svg-icons";
 
 
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-library.add(faXmark, faPencil, faPlus, faPenToSquare, faTrashCan, faBars, faAngleRight, faTowerBroadcast, faGlobe,  );
+library.add(faXmark, faPencil, faPlus, faPenToSquare, faTrashCan, faBars, faAngleRight, faTowerBroadcast, faGlobe, faCheck );
 Vue.component("font-awesome-icon", FontAwesomeIcon);
 Vue.config.productionTip = false;
 Vue.use(GmapVue, {

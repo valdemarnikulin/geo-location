@@ -1,5 +1,3 @@
-// [ ] add button Clear map // [ ] add button Clear Area // [ ] add button Send
-to Back
 <template>
   <div class="gmaps">
     <GmapMap
@@ -21,41 +19,32 @@ to Back
           ><font-awesome-icon icon="fa-solid fa-pencil" /> Draw area</b-button
         >
       </div>
-      <!-- <b-button
-          v-for="(btn, i) in buttons"
-          :key="btn.i"
-          size="sm"
-          variant="success"
-          @mouseover="hoverPolygon(i)"
-          @mouseleave="unHoverPolygon"
-          @click="delAreaOfIndex(i)"
-          ><font-awesome-icon icon="fa-solid fa-xmark" /> {{ btn.title }}
-          {{ i + 1 }}</b-button
-        > -->
       <b-input-group
         v-for="(form, i) in formsArray"
         :key="form.i"
         size="sm"
         class="mt-3"
+        
         @mouseover="hoverPolygon(i)"
         @mouseleave="unHoverPolygon"
       >
         <b-form-input
+        :readonly="isButtonDisabled"
           v-model="form.i"
           placeholder="Enter name area"
         ></b-form-input>
         <b-input-group-append>
+          <b-button size="sm" id="index" variant="success" @click="saveName(i)"
+            ><font-awesome-icon icon="fa-solid fa-check" />
+          </b-button>
           <b-button size="sm" variant="danger" @click="delAreaOfIndex(i)"
             ><font-awesome-icon icon="fa-solid fa-xmark" />
           </b-button>
         </b-input-group-append>
       </b-input-group>
     </div>
-
     <div>{{ coordinatesArray }}</div>
-    <div>{{ newArrayObject }}</div>
-
-    <b-button variant="success" @click="sendData(this.coordinatesArray)"
+    <b-button variant="success" @click="webSocketSend('Hello world')"
       >Send data</b-button
     >
     <!-- <div v-for="(poly, index) in polygons" :key="index"></div> -->
@@ -78,19 +67,11 @@ export default {
   data() {
     return {
       paths: [],
-      polygonObj: {},
       polygons: [],
-      deleteInput: true,
-      buttons: [],
-      button: null,
       coordinatesArray: [],
-      selectedPolygon: null,
-      selectedBtn: null,
-      isNameArea: "",
       formsArray: [],
       oneFrom: null,
       formNames: [],
-      newArrayObject: "",
       connection: null,
       optionsMaps: {
         zoomControl: true,
@@ -105,9 +86,32 @@ export default {
       },
     };
   },
+  created: function () {
+    console.log("Starting connection to WebSocket Server");
+    this.connection = new WebSocket("wss://echo.websocket.org");
+
+    this.connection.onmessage = function (event) {
+      console.log(event);
+    };
+
+    this.connection.onopen = function (event) {
+      console.log(event);
+      console.log("Successfully connected to the echo websocket server...");
+    };
+  },
   methods: {
     webSocketSend(message) {
+      console.log("connection",this.connection);
       this.connection.send(message);
+    },
+    saveName(index) {
+      let findPoly = this.polygons[index];
+      this.getPolygonCoords(findPoly);
+      let findName = this.formsArray[index];
+      console.log("findName.i", findName.i);
+    let findCoord = this.coordinatesArray[index];
+console.log("findCoord", findCoord);
+    findCoord.name = findName.i;
     },
     unHoverPolygon() {
       this.polygons.forEach((polygon) => {
@@ -128,82 +132,10 @@ export default {
       console.log("removePoly", removePoly);
       removePoly[0].setMap(null);
       console.log("after remove splice", this.polygons);
-      console.log("buttons before splice", this.buttons);
-      this.buttons.splice(index, 1);
-      console.log("buttons after splice", this.buttons);
+      
       this.formsArray.splice(index, 1);
       console.log("forms after splice", this.formsArray);
-    },
-    concatArrays() {
-      this.formsArray.forEach((form) => {
-        let nameArea = { name: form.i };
-        console.log("form name propertie", nameArea);
-
-        this.formNames.push(nameArea);
-        console.log("array names with propertie", this.formNames);
-      });
-
-      // this.coordinatesArray.forEach((a1) => {
-      //   a1.name = this.formNames.find(
-      //     (el, index) => el[index] == a1[index]
-      //   ).name;
-      // });
-
-      for (let index = 0; index < this.coordinatesArray.length; index++) {
-        let element = this.coordinatesArray[index];
-        console.log("one loop");
-        for (let j = 0; j < this.formNames.length; j++) {
-          let el = this.formNames[j];
-
-          let findIndex = function (el, index) {
-            if (el[index] == element[index]) {
-              element.name = el.name;
-              console.log(
-                "index",
-                index,
-                "el.name",
-                el.name,
-                "element.name",
-                element.name
-              );
-            }
-          };
-        }
-        // element.name = this.formNames.find(findIndex).name;
-        // console.log("coords with name after concat new array", element.name);
-      }
-
-      console.log("coords with name after concat", this.coordinatesArray);
-      // let newArrayCoords = this.formNames.map((obj) => {
-      // let matchinEl = this.coordinatesArray.find(
-      //   (el, index) => el[index] === obj[index]
-
-      //   // Object.assign({}, obj, el)
-      // );
-      // this.coordinatesArray.map((el, i) => {
-      //   if (el[i] === obj[i]) {
-      //     Object.assign({}, obj, el);
-      //   }
-      // });
-      // console.log("coords with name after concat", this.coordinatesArray);
-      // console.log("matching EL", matchinEl);
-      // return Object.assign({}, obj, matchinEl);
-      // });
-      // this.newArrayObject = newArrayCoords;
-      // console.log("new array coords", newArrayCoords);
-    },
-    sendData() {
-      this.polygons.forEach((polygon) => {
-        this.getPolygonCoords(polygon);
-        // this.polygons.push(polygon);
-        // this.nameArray();
-      });
-      // this.nameArray();
-      this.concatArrays();
-      // this.polygons.concat(this.formsArray);
-      // console.log("formsArray", this.formsArray);
-      // console.log("concat Arrays", this.polygons);
-      this.webSocketSend(message);
+      this.coordinatesArray.splice(index, 1);
     },
     drawFreeHand() {
       //the polygon
@@ -214,9 +146,7 @@ export default {
         strokeWeight: 2,
         clickable: false,
       });
-
       poly.setMap(this.$refs.gmap.$mapObject);
-
       //move-listener
       const move = google.maps.event.addListener(
         this.$refs.gmap.$mapObject,
@@ -225,7 +155,6 @@ export default {
           poly.getPath().push(e.latLng);
         }
       );
-
       //mouseup-listener
       google.maps.event.addListenerOnce(
         this.$refs.gmap.$mapObject,
@@ -259,24 +188,13 @@ export default {
     },
     getPolygonCoords(poly) {
       let len = poly.getPath().getLength();
-      let Area = "";
+      let Coordinates = "";
       for (var i = 0; i < len; i++) {
-        Area += "{" + poly.getPath().getAt(i).toUrlValue(6) + "}, ";
-        //Use this one instead if you want to get rid of the wrap > new google.maps.LatLng(),
-        //htmlStr += "" + myPolygon.getPath().getAt(i).toUrlValue(5);
+        Coordinates += "{" + poly.getPath().getAt(i).toUrlValue(6) + "}, ";
       }
-      let coords = { Area };
-      coords.name = "";
-      // coords.joke = "form";
+      let coords = { Coordinates };
       console.log("name from getpolycoords", coords);
       this.coordinatesArray.push(coords);
-
-      // this.formsArray.forEach((form) => {
-      //   console.log("form value", form.i);
-      // });
-      // console.log("forms array", this.formsArray);
-      // console.log("form value", this.formsArray.value);
-      // this.coordinatesArray.concat(this.formsArray.value);
     },
 
     disable() {
@@ -308,60 +226,32 @@ export default {
         }
       );
     },
-    deletePolygonFromArray(polygonToRemove) {
-      this.polygons.filter((poly) => poly !== polygonToRemove);
-      if (this.selectedPolygon === polygonToRemove) {
-        this.selectedPolygon = null;
-      }
-      console.log(this.polygons);
-    },
     createButton() {
-      // let map = this.$refs.gmap.$mapObject;
-
-      //### Add a button on Google Maps ...
-      let controlText = document.createElement("button");
-      // controlText.title = "Area";
+      //### Add a input on Google Maps ...
+      
       let inputGroup = document.createElement("form");
       this.oneFrom = inputGroup;
-      // this.oneFrom.$set({ value: "" });
-      console.log(this.oneFrom);
-
+      console.log(this.oneFrom); //consolellllllllll
       this.formsArray.push(this.oneFrom);
-      // this.formsArray.push({ value: "" });
       console.log("fromsArray - ", this.formsArray);
-      //myLocationControlDiv.appendChild(controlText);
-      // this.uniqueInput();
-      // map.controls[google.maps.ControlPosition.LEFT_TOP].push(controlTrashUI);
-      // map.controls[google.maps.ControlPosition.TOP_RIGHT].push(controlText);
-      console.log("createButton"); //?
-      this.button = controlText;
-      // if (!this.buttons.includes(this.button)) {
-      this.buttons.push(this.button);
-      console.log("buttons", this.buttons);
-      // this.hoverPolygon();
-      // }
     },
   },
   mounted() {},
   computed: {
     google: getGoogleMapsAPI,
   },
-  created: function () {
-    console.log("Starting connection to WebSocket Server");
-    this.connection = new WebSocket("wss://echo.websocket.org");
-
-    this.connection.onmessage = function (event) {
-      console.log(event);
-    };
-
-    this.connection.onopen = function (event) {
-      console.log(event);
-      console.log("Successfully connected to the echo websocket server...");
-    };
-  },
+  
 };
 </script>
 <style scoped>
+.input-group-append {
+  background-color: #fff;
+}
+.disabledClass{
+  border-color: rgb(116, 116, 116) !important;
+  background-color: rgb(116, 116, 116) !important;
+  opacity: 0.9 !important;
+}
 .map__wrapper {
   position: relative;
 }

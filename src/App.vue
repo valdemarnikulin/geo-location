@@ -26,7 +26,7 @@ export default {
 <style>
 body,
 html {
-  font-size: 14px;
+  font-size: 16px;
 }
 .app-vue {
   background: rgb(250, 251, 252);

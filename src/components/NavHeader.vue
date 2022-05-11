@@ -84,7 +84,7 @@ export default {};
   align-items: center;
   justify-content: center;
   background: rgba(0, 0, 0, 0.06);
-  padding: 5px;
+  padding: 7px;
   border-radius: 50%;
 }
 .wrap__usa img {
@@ -149,6 +149,7 @@ export default {};
 }
 .wrap__icons {
   display: flex;
+  align-items: center;
 }
 @media (min-width: 992px) {
   .navbar-expand-lg {
