@@ -1,28 +1,35 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div id="app" class="app-vue">
+    <side-bar></side-bar>
+    <nav-header></nav-header>
+    <old-tasks></old-tasks>
+    <new-task></new-task>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import NavHeader from "./components/NavHeader.vue";
+import NewTask from "./components/NewTask.vue";
+import OldTasks from "./components/OldTasks.vue";
+import SideBar from "./components/SideBar.vue";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
-    HelloWorld
-  }
-}
+    NewTask,
+    OldTasks,
+    NavHeader,
+    SideBar,
+  },
+};
 </script>
-
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+body,
+html {
+  font-size: 14px;
+}
+.app-vue {
+  background: rgb(250, 251, 252);
 }
 </style>
+
