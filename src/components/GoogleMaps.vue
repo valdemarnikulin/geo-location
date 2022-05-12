@@ -29,13 +29,16 @@
         @mouseleave="unHoverPolygon"
       >
         <b-form-input
-        :readonly="isButtonDisabled"
           v-model="form.i"
           placeholder="Enter name area"
+          ref="input"
         ></b-form-input>
         <b-input-group-append>
-          <b-button size="sm" id="index" variant="success" @click="saveName(i)"
+          <b-button size="sm" variant="success" @click="saveName(i)"
             ><font-awesome-icon icon="fa-solid fa-check" />
+          </b-button>
+          <b-button size="sm"  variant="warning" @click="editName(i)"
+            ><font-awesome-icon icon="fa-solid fa-pencil" />
           </b-button>
           <b-button size="sm" variant="danger" @click="delAreaOfIndex(i)"
             ><font-awesome-icon icon="fa-solid fa-xmark" />
@@ -47,14 +50,13 @@
     <b-button variant="success" @click="webSocketSend('Hello world')"
       >Send data</b-button
     >
-    <!-- <div v-for="(poly, index) in polygons" :key="index"></div> -->
   </div>
 </template>
-<script
+<!-- <script
   async
   src="https://maps.googleapis.com/maps/api/js?v=weekly
         &key=AIzaSyDLEvPNQnvOtKO4wp1XBfVTQdZIsf3gr6U&libraries=drawing&callback=initMap"
-></script>
+></script> -->
 <script
   type="text/javascript"
   src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"
@@ -73,16 +75,18 @@ export default {
       oneFrom: null,
       formNames: [],
       connection: null,
+      isButtonDisabled: false,
       optionsMaps: {
         zoomControl: true,
         mapTypeControl: false,
         scaleControl: true,
         rotateControl: false,
         fullscreenControl: true,
-        disableDefaultUi: true,
+        disableDefaultUi: false, // not need
         draggable: false,
         scrollwheel: false,
         disableDoubleClickZoom: false,
+        clickableIcons: false,
       },
     };
   },
@@ -104,14 +108,60 @@ export default {
       console.log("connection",this.connection);
       this.connection.send(message);
     },
+    editName(index) {
+      let elementForm = document.getElementsByClassName('input-group-append');
+      // console.log('elementForm', elementForm);
+      let el = elementForm[index].getElementsByClassName('btn');
+      // console.log('el', el);
+      el[0].removeAttribute("disabled");
+      // console.log("el[0]", el[0]);
+let formEl = document.getElementsByClassName('input-group');
+// console.log("formEl", formEl);
+let inputEl = formEl[index];
+// console.log("inputEl", inputEl);
+let inputPiece = inputEl.getElementsByTagName('input');
+// console.log("inputPiece",inputPiece);
+// console.log("inputPiece[0]",inputPiece[0]);
+inputPiece[0].removeAttribute('readonly', 'readonly');
+
+
+    },
     saveName(index) {
-      let findPoly = this.polygons[index];
-      this.getPolygonCoords(findPoly);
+      // console.log(this.$refs.input[index],'this.$refs.input[index]')
+      // this.$refs.input[index].disabled = true
+      // return
+      // console.log("index",index);
+     this.polygons.map((poly)=>{
+        this.getPolygonCoords(poly);
+      });
+      // let findPoly = this.polygons[index];
+      // this.getPolygonCoords(findPoly);
       let findName = this.formsArray[index];
-      console.log("findName.i", findName.i);
+      // console.log("findName.i", findName.i);
     let findCoord = this.coordinatesArray[index];
-console.log("findCoord", findCoord);
+// console.log("this.coordinatesArray", this.coordinatesArray);
+// console.log("findCoord", findCoord);
     findCoord.name = findName.i;
+    // console.log("findCoord.name", findCoord.name);
+    let result = this.coordinatesArray.filter((el)=>{
+      return el.name;
+    });
+    this.coordinatesArray = result;
+
+    // console.log("coords after filter this.coordinatesArray", this.coordinatesArray);
+    let elementForm = document.getElementsByClassName('input-group-append');
+    // console.log("elementForm", elementForm)
+      let el = elementForm[index].getElementsByClassName('btn');
+      el[0].setAttribute("disabled", true);
+      // console.log("disabled true", el[0])
+    let formEl = document.getElementsByClassName('input-group');
+// console.log("formEl", formEl);
+let inputEl = formEl[index];
+// console.log("inputEl", inputEl);
+let inputPiece = inputEl.getElementsByTagName('input');
+console.log("inputPiece",inputPiece);
+inputPiece[0].setAttribute('readonly', 'readonly');
+console.log("inputPiece[0]",inputPiece[0]);
     },
     unHoverPolygon() {
       this.polygons.forEach((polygon) => {
@@ -171,7 +221,7 @@ console.log("findCoord", findCoord);
             strokeWeight: 2,
             fillColor: "#0e0f3e",
             fillOpacity: 0.35,
-            editable: true,
+            editable: false,
           });
           google.maps.event.clearListeners(
             this.$refs.gmap.$mapObject.getDiv(),
@@ -179,6 +229,7 @@ console.log("findCoord", findCoord);
           );
           this.enable();
           this.polygons.push(poly);
+          // this.getPolygonCoords(poly);
           this.createButton();
           console.log("polygons array - ", this.polygons);
           let map = this.$refs.gmap.$mapObject;
