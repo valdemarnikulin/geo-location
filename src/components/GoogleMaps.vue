@@ -19,7 +19,7 @@
           ><font-awesome-icon icon="fa-solid fa-pencil" /> Draw area</b-button
         >
       </div>
-      <b-input-group
+      <div class="overflow-forms"><b-input-group
         v-for="(form, i) in formsArray"
         :key="form.i"
         size="sm"
@@ -32,6 +32,9 @@
           v-model="form.i"
           placeholder="Enter name area"
           ref="input"
+          :id="i"
+          
+          
         ></b-form-input>
         <b-input-group-append>
           <b-button size="sm" variant="success" @click="saveName(i)"
@@ -45,6 +48,7 @@
           </b-button>
         </b-input-group-append>
       </b-input-group>
+      </div>
     </div>
     <div>{{ coordinatesArray }}</div>
     <b-button variant="success" @click="webSocketSend('Hello world')"
@@ -76,6 +80,7 @@ export default {
       formNames: [],
       connection: null,
       isButtonDisabled: false,
+      // isDisabled:0,
       optionsMaps: {
         zoomControl: true,
         mapTypeControl: false,
@@ -127,9 +132,41 @@ inputPiece[0].removeAttribute('readonly', 'readonly');
 
     },
     saveName(index) {
-      // console.log(this.$refs.input[index],'this.$refs.input[index]')
-      // this.$refs.input[index].disabled = true
+      // debugger;
+      let inputId = document.getElementById(index);
+      console.log("inputId", inputId);
+inputId.setAttribute('readonly', 'readonly');
+
+
+
+      // console.log("coords after filter this.coordinatesArray", this.coordinatesArray);
+    let elementForm = document.getElementsByClassName('input-group-append');
+    // console.log("elementForm", elementForm)
+      let el = elementForm[index].getElementsByClassName('btn');
+      el[0].setAttribute("disabled", true);
+      
+      // console.log("disabled true", el[0])
+//     let formEl = document.querySelectorAll('.input-group');
+// console.log("formEl", formEl);
+// let inputEl = formEl[index];
+// console.log("inputEl", inputEl);
+// let inputPiece = inputEl.querySelectorAll('.form-control');
+// console.log("inputPiece",inputPiece);
+// if(inputPiece[0]._value == ''){
+//   console.log("value empty")
+//   el[0].removeAttribute("disabled");
+//   inputPiece[0].classList.add('danger');
+//   return
+// }
+// inputPiece[0].setAttribute('readonly', 'readonly');
+// console.log("inputPiece[0]",inputPiece[0]);
+// console.log("inputEl", inputEl)
+// console.log("value empty",inputPiece[0]._value)
+
+      // console.log(this.$refs.input,'this.$refs.input')
+      // this.$refs.input[index].disabled = true;
       // return
+
       // console.log("index",index);
      this.polygons.map((poly)=>{
         this.getPolygonCoords(poly);
@@ -148,20 +185,7 @@ inputPiece[0].removeAttribute('readonly', 'readonly');
     });
     this.coordinatesArray = result;
 
-    // console.log("coords after filter this.coordinatesArray", this.coordinatesArray);
-    let elementForm = document.getElementsByClassName('input-group-append');
-    // console.log("elementForm", elementForm)
-      let el = elementForm[index].getElementsByClassName('btn');
-      el[0].setAttribute("disabled", true);
-      // console.log("disabled true", el[0])
-    let formEl = document.getElementsByClassName('input-group');
-// console.log("formEl", formEl);
-let inputEl = formEl[index];
-// console.log("inputEl", inputEl);
-let inputPiece = inputEl.getElementsByTagName('input');
-console.log("inputPiece",inputPiece);
-inputPiece[0].setAttribute('readonly', 'readonly');
-console.log("inputPiece[0]",inputPiece[0]);
+    
     },
     unHoverPolygon() {
       this.polygons.forEach((polygon) => {
@@ -172,7 +196,6 @@ console.log("inputPiece[0]",inputPiece[0]);
     },
     hoverPolygon(index) {
       let findedPolygon = this.polygons[index];
-      console.log("findedPoly", findedPolygon);
       findedPolygon.setOptions({
         fillOpacity: 0.7,
       });
@@ -290,6 +313,9 @@ console.log("inputPiece[0]",inputPiece[0]);
   mounted() {},
   computed: {
     google: getGoogleMapsAPI,
+    nameState() {
+        return this.form.i.length > 2 ? true : false
+      }
   },
   
 };
@@ -366,5 +392,12 @@ console.log("inputPiece[0]",inputPiece[0]);
   font-size: 0.8545454545rem;
   line-height: 1.5;
   border-radius: 0.25rem;
+}
+.danger {
+  border: 1px solid #dc3545;
+}
+.overflow-forms {
+  height: 330px;
+  overflow: auto;
 }
 </style>
