@@ -1,7 +1,8 @@
 <template>
   <div id="app" class="app-vue">
-    <side-bar></side-bar>
     <nav-header></nav-header>
+    <side-bar></side-bar>
+
     <old-tasks></old-tasks>
     <new-task></new-task>
   </div>
@@ -9,6 +10,7 @@
 
 <script>
 import NavHeader from "./components/NavHeader.vue";
+
 import NewTask from "./components/NewTask.vue";
 import OldTasks from "./components/OldTasks.vue";
 import SideBar from "./components/SideBar.vue";
@@ -23,10 +25,12 @@ export default {
   },
 };
 </script>
-<style>
+<style lang='scss'>
+@import "./assets/custom.scss";
 body,
 html {
   font-size: 16px;
+  font-family: Roboto, sans-serif;
 }
 .app-vue {
   background: rgb(250, 251, 252);

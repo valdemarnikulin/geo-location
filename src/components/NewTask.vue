@@ -4,7 +4,7 @@
   <div class="new-task">
     <b-collapse class="map__wrapper" id="collapse-2">
       <b-card
-        class="mx-4 my-4 velmld-parent shadow"
+        class="mx-3 my-4 velmld-parent shadow"
         shadow="lg"
         body-class="text-left"
       >
@@ -108,7 +108,7 @@
             </div>
           </div>
         </b-form-group>
-        <b-form-checkbox v-model="showMap" toggle
+        <b-form-checkbox v-model="showMap" toggle switch
           >Specify on the map</b-form-checkbox
         >
         <google-maps class="mt-4" v-if="showMap == true"></google-maps>
@@ -168,7 +168,9 @@ export default {
       selectedFiles: null,
       selectedUrls: null,
       showMap: false,
-
+      name: null,
+      datepicker: null,
+      timepicker: null,
       optionsCountry: [
         { text: "Countries" },
         { text: "Every 5 days" },
@@ -202,61 +204,5 @@ export default {
 </script>
 
 <style>
-label {
-  font-weight: bold;
-}
-.forms__intensy {
-  display: grid;
-  gap: 5px;
-  grid-template: 1fr/1fr 1fr 1fr;
-  align-items: end;
-}
-.links {
-  text-decoration: none;
-}
-.btn-primary.btn-shadow,
-.btn-primary.btn-shadow:hover {
-  -webkit-box-shadow: 0 0.125rem 0.625rem rgb(14 15 62 / 60%),
-    0 0.0625rem 0.125rem #0e0f3e;
-  box-shadow: 0 0.125rem 0.625rem rgb(14 15 62 / 60%),
-    0 0.0625rem 0.125rem #0e0f3e;
-}
-.btn.btn-wide {
-  padding: 0.375rem 1.5rem;
-  font-size: 0.8545454545rem;
-  line-height: 1.5;
-  border-radius: 0.25rem;
-}
-.btn-primary {
-  -webkit-box-shadow: 0 0.125rem 0.625rem rgba(14, 15, 62, 0.6),
-    0 0.0625rem 0.125rem #0e0f3e !important;
-  box-shadow: 0 0.125rem 0.625rem rgba(14, 15, 62, 0.6),
-    0 0.0625rem 0.125rem #0e0f3e !important;
-  border-color: #0e0f3e !important;
-  background-color: #0e0f3e !important;
-}
-.btn-primary:hover,
-.btn-primary:active,
-.btn-primary:focus,
-.btn-primary:not(:disabled):not(.disabled):active,
-.btn-primary:not(:disabled):not(.disabled).active,
-.show > .btn-primary.dropdown-toggle {
-  background-color: #070952 !important;
-  border-color: #070952 !important;
-}
-
-.btn__show {
-  border-color: #07071f !important;
-  color: #07071f !important;
-}
-.btn-outline-primary:focus {
-  box-shadow: none;
-}
-.btn__show:hover {
-  background-color: #070952 !important;
-  border-color: #070952 !important;
-}
-.new-task {
-  margin-bottom: 100px;
-}
+@import "../assets/newTask.scss";
 </style>

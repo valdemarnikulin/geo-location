@@ -17,10 +17,12 @@ import { faCheck } from "@fortawesome/free-solid-svg-icons";
 
 import { faTowerBroadcast } from "@fortawesome/free-solid-svg-icons";
 import { faGlobe } from "@fortawesome/free-solid-svg-icons";
+import { faComments } from "@fortawesome/free-solid-svg-icons";
 
 
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-library.add(faXmark, faPencil, faPlus, faPenToSquare, faTrashCan, faBars, faAngleRight, faTowerBroadcast, faGlobe, faCheck );
+
+library.add(faXmark, faPencil, faPlus, faPenToSquare, faTrashCan, faBars, faAngleRight, faTowerBroadcast, faGlobe, faCheck, faComments );
 Vue.component("font-awesome-icon", FontAwesomeIcon);
 Vue.config.productionTip = false;
 Vue.use(GmapVue, {

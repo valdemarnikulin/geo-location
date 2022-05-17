@@ -1,0 +1,54 @@
+{
+    "media": [
+        {
+            "name": "Vlad",
+            "coords": 123,
+            "isDisabled": true
+        },
+        {
+            "name": "DSd",
+            "coords": 343,
+            "isDisabled": true
+        },
+        {
+            "name": "affa",
+            "coords": 65774,
+            "isDisabled": false
+        },
+        {
+            "name": "sdgs",
+            "coords": 36435,
+            "isDisabled": false
+        },
+        {
+            "name": "sdfsd",
+            "coords": 2342,
+            "isDisabled": true
+        },
+        {
+            "name": "ghjgh",
+            "coords": 23,
+            "isDisabled": false
+        },
+        {
+            "name": "jljft",
+            "coords": 3463,
+            "isDisabled": true
+        },
+        {
+            "name": "wetert",
+            "coords": 747,
+            "isDisabled": false
+        },
+        {
+            "name": "dreryi",
+            "coords": 14234223,
+            "isDisabled": true
+        },
+        {
+            "name": "bnmft",
+            "coords": 2342,
+            "isDisabled": false
+        }
+    ]
+}

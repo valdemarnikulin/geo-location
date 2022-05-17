@@ -1,0 +1,104 @@
+.custom-switch .custom-control-label::after {
+    background-color: #fff !important;
+  }
+  .custom-switch .custom-control-label::before {
+    background-color: #6c757d !important;
+  }
+  .switch__body {
+    position: relative;
+  }
+  .switch__label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-weight: 600;
+    color: #fff;
+    z-index: 50;
+  }
+  .opacity-7 {
+    opacity: 0.7;
+  }
+  .blue-side {
+    background-color: #0e0f3e;
+  }
+  .btn-outline-primary {
+    color: #050514 !important;
+    border-color: #050514 !important;
+  }
+  .border-none {
+    border: none !important;
+  }
+  .icon-red {
+    color: red !important;
+    background: none !important;
+  }
+  .main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    font-size: 0.94rem;
+  }
+  
+  .custom-nav .nav-link.isActive[data-v-28312f32] {
+    color: #0e0f3e !important;
+  }
+  .custom-nav .nav-link[data-v-28312f32] {
+    color: #0e0f3e !important;
+    border-bottom-color: #0e0f3e;
+  }
+  .main-header .main-header-right {
+    color: #0e0f3e;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: end;
+    -ms-flex-align: end;
+    align-items: flex-end;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+  }
+  .task__link {
+    position: relative;
+    border-bottom: 2px solid #050514;
+    color: #050514 !important;
+  }
+  .nav-pills .nav-link {
+    border-radius: 0rem !important;
+  }
+  .btn__news {
+    border: 1.5px solid #050514 !important;
+    color: #050514 !important;
+  }
+  .btn__news:hover {
+    background-color: #ffffff !important;
+  }
+  .my-header {
+    margin-top: 3rem !important;
+    padding-left: 18.5rem !important;
+  }
+  .circle-wrapper {
+    position: fixed;
+    cursor: pointer;
+    bottom: 30px;
+    right: 30px;
+    z-index: 50;
+  }
+  .circle-my {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    background-color: #0e0f3e;
+    z-index: 51;
+  }
+  .v-switch-core {
+    width: 50px;
+    height: 22px;
+    background-color: rgb(58, 196, 125);
+    border-radius: 11px;
+  }

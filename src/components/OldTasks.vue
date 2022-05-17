@@ -1,6 +1,18 @@
 // switch checkbox
 <template>
-  <div>
+  <div class="col my-header py-3">
+    <div class="circle-wrapper">
+      <div class="circle-my">
+        <!-- <b-icon
+          icon="check-circle"
+          style="z-index: 100; background-color: #fff"
+        ></b-icon> -->
+        <font-awesome-icon
+          icon="fa-solid fa-comments"
+          style="z-index: 100; color: #fff"
+        />
+      </div>
+    </div>
     <div class="main-header mx-4 my-4">
       <div class="main-header-left">
         <ul class="nav custom-nav nav-pills">
@@ -16,7 +28,7 @@
         <div class="opacity-7 text-right">Data Testing</div>
       </div>
     </div>
-    <b-card class="mx-4 my-4 velmld-parent shadow">
+    <b-card class="mx-3 my-4 velmld-parent shadow">
       <div class="tasks__head">
         <div
           style="
@@ -110,9 +122,10 @@
             ><font-awesome-icon class="mr-1" icon="fa-solid fa-pen-to-square" />b-button>
         </template> -->
         <template #cell(on_off)="on_off">
-          <b-form-checkbox size="lg" switch class="switch__body">{{
-            on_off.on_off
-          }}</b-form-checkbox>
+          <b-form-checkbox size="lg" switch class="switch__body"
+            >{{ on_off.on_off }}
+            <span class="switch__label">asdasdas</span></b-form-checkbox
+          >
         </template>
       </b-table>
     </b-card>
@@ -142,7 +155,7 @@ export default {
           net_type: "All Net Types	",
           intensity: "100",
           Status: "NEW",
-          on_off: "",
+          on_off: { on: true, off: false },
         },
         {
           Name: "tetetest",
@@ -271,80 +284,5 @@ export default {
 </script>
 
 <style>
-/* @import "/src/assets/icons/custom"; */
-.custom-switch .custom-control-label::after {
-  background-color: #fff !important;
-}
-.custom-switch .custom-control-label::before {
-  background-color: #6c757d !important;
-}
-.switch__body {
-  position: relative;
-}
-.switch__label {
-  position: absolute;
-  top: 0;
-  left: 0;
-  font-weight: 600;
-  color: #fff;
-  z-index: 1;
-}
-.opacity-7 {
-  opacity: 0.7;
-}
-.blue-side {
-  background-color: #0e0f3e;
-}
-.btn-outline-primary {
-  color: #050514 !important;
-  border-color: #050514 !important;
-}
-.border-none {
-  border: none !important;
-}
-.icon-red {
-  color: red !important;
-  background: none !important;
-}
-.main-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-}
-
-.custom-nav .nav-link.isActive[data-v-28312f32] {
-  color: #0e0f3e !important;
-}
-.custom-nav .nav-link[data-v-28312f32] {
-  color: #0e0f3e !important;
-  border-bottom-color: #0e0f3e;
-}
-.main-header .main-header-right {
-  color: #0e0f3e;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-align: end;
-  -ms-flex-align: end;
-  align-items: flex-end;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-  -ms-flex-direction: column;
-  flex-direction: column;
-}
-.task__link {
-  position: relative;
-  border-bottom: 2px solid #050514;
-  color: #050514 !important;
-}
-.nav-pills .nav-link {
-  border-radius: 0rem !important;
-}
-.btn__news {
-  border: 1.5px solid #050514 !important;
-  color: #050514 !important;
-}
-.btn__news:hover {
-  background-color: #ffffff !important;
-}
+@import "../assets/oldTask.scss";
 </style>
