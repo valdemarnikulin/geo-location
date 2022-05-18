@@ -1,12 +1,14 @@
 <template>
-  <div class="gmaps">
+<div>
+  <GmapAutocomplete @place_changed="setPlace" style="width: 50%"></GmapAutocomplete>
+  <div class="gmaps"> 
     <GmapMap
       ref="gmap"
       :options="optionsMaps"
       :center="{ lat: 43.226100828005, lng: 76.95916673589507 }"
       :zoom="12"
       map-type-id="terrain"
-      style="width: 100%; height: 400px"
+      style="width: 100%; height: 400px; margin-top: 10px;"
     >
     </GmapMap>
     <div class="btns">
@@ -58,9 +60,16 @@
       </div>
     </div>
     <div>{{ items }}</div>
-    <b-button variant="success" @click="webSocketSend(items)"
+    <b-button variant="success" @click="sendData"
       >Send data</b-button
     >
+    <b-button variant="warning" @click="getData"
+      >GET data</b-button
+    >
+    <b-button variant="warning" @click="checkArray"
+      >checkArray</b-button
+    >
+  </div>
   </div>
 </template>
 <script
@@ -72,6 +81,9 @@ import { getGoogleMapsAPI } from "gmap-vue";
 
 export default {
   name: "GoogleMaps",
+  props:{
+    isReady: Boolean,
+  },
   data() {
     return {
       items: [],
@@ -80,6 +92,7 @@ export default {
       polygons: [],
       connection: null,
       isResizeDiv: false,
+      currentPlace: null,
       optionsMaps: {
         draggable: false,
         zoomControl: true,
@@ -94,35 +107,54 @@ export default {
       },
     };
   },
-  created() {
-    console.log("Starting connection to WebSocket Server");
-    this.connection = new WebSocket("ws://localhost:3000");
+  //  async created() {
+  //   try {
+  //     const res = await axios.get(baseURL);
 
-    this.connection.onmessage = function (event) {
-      console.log(event);
-    };
-
-    this.connection.onopen = function (event) {
-      console.log(event);
-      console.log("Successfully connected to the echo websocket server...");
-    };
-  },
+  //     this.items = res.data;
+  //   } catch (e) {
+  //     console.error(e);
+  //   }
+  // },
   methods: {
-    webSocketSend(message) {
-      this.connection.send(JSON.stringify(message));
-      this.items = [];
-      this.polygons.forEach((poly) => {
-        poly.setMap(null);
-      });
+   setPlace(place) {
+      this.currentPlace = place;
+    },
+    
+   async getData() {
+      try {
+      const res = await axios.get(baseURL);
+res.data.forEach((item1)=>{
+this.items.
+  this.items.push(item1);
+})
+      // this.items = res.data;
+      console.log("🚀 ~ file: GoogleMaps.vue ~ line 135 ~ getData ~ this.items", this.items)
+    } catch (e) {
+      console.error(e);
+    }
     },
     editName(item) {
       item.isDisabledForm = false;
     },
+    checkArray(){    
+ let chekedForm = this.items.find((item)=> {
+   if(item.isDisabledForm === false){
+     this.isReady = false;
+     return item
+   }
+   });
+  this.$emit('checkArray', {items: this.items, isReady: this.isReady, polygons: this.polygons});
+  console.log("🚀 ~ file: GoogleMaps.vue ~ line 142 ~ checkArray ~ this.polygons", this.polygons)
+    },
     saveName(item) {
+     
       if (item.name.length <= 0) {
         return;
       }
       item.isDisabledForm = !item.isDisabledForm;
+     this.checkArray();
+     
     },
     unHoverPolygon() {
       this.polygons.forEach((polygon) => {

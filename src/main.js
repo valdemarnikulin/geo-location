@@ -21,7 +21,9 @@ import { faComments } from "@fortawesome/free-solid-svg-icons";
 
 
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-
+import axios from 'axios';
+import VueAxios from 'vue-axios';
+Vue.use(VueAxios, axios);
 library.add(faXmark, faPencil, faPlus, faPenToSquare, faTrashCan, faBars, faAngleRight, faTowerBroadcast, faGlobe, faCheck, faComments );
 Vue.component("font-awesome-icon", FontAwesomeIcon);
 Vue.config.productionTip = false;

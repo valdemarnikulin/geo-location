@@ -111,7 +111,7 @@
         <b-form-checkbox v-model="showMap" toggle switch
           >Specify on the map</b-form-checkbox
         >
-        <google-maps class="mt-4" v-if="showMap == true"></google-maps>
+        <google-maps class="mt-4" v-if="showMap == true"  @checkArray="changeState"></google-maps>
         <b-form-group class="my-4">
           <label for="intensy"
             >Testing Sources<span class="text-danger">*</span></label
@@ -146,7 +146,7 @@
             </div>
           </div>
         </b-form-group>
-        <b-button class="mr-3" variant="secondary"
+        <b-button class="mr-3" variant="primary" :disabled="isReady" @click="sendData"
           ><font-awesome-icon class="mr-1" icon="fa-solid fa-pen-to-square" />
           Ready</b-button
         >
@@ -158,6 +158,8 @@
 
 <script>
 import GoogleMaps from "./GoogleMaps.vue";
+import axios from "axios";
+const baseURL = "http://localhost:3000/media";
 export default {
   components: { GoogleMaps },
   data() {
@@ -171,6 +173,9 @@ export default {
       name: null,
       datepicker: null,
       timepicker: null,
+    isReady: true,
+    items: [],
+    polygons:[],
       optionsCountry: [
         { text: "Countries" },
         { text: "Every 5 days" },
@@ -196,6 +201,31 @@ export default {
     };
   },
   methods: {
+    changeState(data){
+      // this.isReady = data;
+      this.isReady = data.isReady;
+      this.items = data.items;
+      this.polygons = data.polygons;
+      console.log("🚀 ~ file: NewTask.vue ~ line 209 ~ changeState ~ data.polygons", data.polygons)
+      console.log("🚀 ~ file: NewTask.vue ~ line 207 ~ changeState ~ data.items", data.items)
+      console.log("🚀 ~ file: NewTask.vue ~ line 206 ~ changeState ~ data.isReady", data.isReady)
+    
+    },
+    async sendData() {
+            try {
+              
+        const res = await axios.post(baseURL, this.items );
+
+        this.items = [...this.items, res.data];
+
+        this.items = [];
+      this.polygons.forEach((poly) => {
+        poly.setMap(null);
+      });
+      } catch (e) {
+        console.error(e);
+      } 
+    },
     toggleShowMap() {
       this.showMap = !this.showMap;
     },
