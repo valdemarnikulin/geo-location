@@ -1,14 +1,22 @@
 <template>
 <div>
-  <GmapAutocomplete @place_changed="setPlace" style="width: 50%"></GmapAutocomplete>
+  <vue-google-autocomplete
+      ref="address"
+      id="map"
+      classname="form-control"
+      placeholder="Please type your cities"
+      v-on:placechanged="getAddressData"
+      types="(cities)"
+      style="width: 50%"
+    ></vue-google-autocomplete>
   <div class="gmaps"> 
     <GmapMap
       ref="gmap"
       :options="optionsMaps"
-      :center="{ lat: 43.226100828005, lng: 76.95916673589507 }"
+      :center="center"
       :zoom="12"
       map-type-id="terrain"
-      style="width: 100%; height: 400px; margin-top: 10px;"
+      style="width: 100%; height: 500px; margin-top: 10px;"
     >
     </GmapMap>
     <div class="btns">
@@ -59,7 +67,7 @@
         </b-input-group>
       </div>
     </div>
-    <div>{{ items }}</div>
+    <!-- <div>{{ items }}</div>
     <b-button variant="success" @click="sendData"
       >Send data</b-button
     >
@@ -68,7 +76,7 @@
     >
     <b-button variant="warning" @click="checkArray"
       >checkArray</b-button
-    >
+    > -->
   </div>
   </div>
 </template>
@@ -78,8 +86,10 @@
 ></script>
 <script>
 import { getGoogleMapsAPI } from "gmap-vue";
+import VueGoogleAutocomplete from "vue-google-autocomplete";
 
 export default {
+   components: { VueGoogleAutocomplete },
   name: "GoogleMaps",
   props:{
     isReady: Boolean,
@@ -93,6 +103,9 @@ export default {
       connection: null,
       isResizeDiv: false,
       currentPlace: null,
+      address: "",
+      center: {lat: 25.6904364, lng: 85.2022902},
+    
       optionsMaps: {
         draggable: false,
         zoomControl: true,
@@ -107,6 +120,9 @@ export default {
       },
     };
   },
+  mounted() {
+   this.$refs.address.focus();
+  },
   //  async created() {
   //   try {
   //     const res = await axios.get(baseURL);
@@ -120,7 +136,11 @@ export default {
    setPlace(place) {
       this.currentPlace = place;
     },
-    
+   checkGeo() {
+     
+     console.log("🚀 ~ file: GoogleMaps.vue ~ line 143 ~ checkGeo ~ map", this.map)
+     this.map.setCenter(43.21419597065723, 76.86466162673098, 12);
+   },
    async getData() {
       try {
       const res = await axios.get(baseURL);
@@ -271,13 +291,24 @@ this.items.
         this.isResizeDiv = true;
       }
     },
+    getAddressData(addressData, placeResultData, id) {
+      console.log("🚀 ~ file: GoogleMaps.vue ~ line 301 ~ getAddressData ~ this.center", this.center)
+   
+
+     this.center.lat = addressData.latitude;
+     this.center.lng = addressData.longitude;
+     console.log("🚀 ~ file: GoogleMaps.vue ~ line 301 ~ getAddressData ~ this.center", this.center)
+      },
+    
   },
-  mounted() {},
+  
   computed: {
     google: getGoogleMapsAPI,
+    
     nameState() {
       return item.name.length > 2 ? true : false;
     },
+     
   },
 };
 </script>
