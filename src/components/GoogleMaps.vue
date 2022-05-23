@@ -1,6 +1,7 @@
+
 <template>
-<div>
-  <vue-google-autocomplete
+  <div>
+    <vue-google-autocomplete
       ref="address"
       id="map"
       classname="form-control"
@@ -9,77 +10,68 @@
       types="(cities)"
       style="width: 50%"
     ></vue-google-autocomplete>
-  <div class="gmaps"> 
-    <GmapMap
-      ref="gmap"
-      :options="optionsMaps"
-      :center="center"
-      :zoom="12"
-      map-type-id="terrain"
-      style="width: 100%; height: 500px; margin-top: 10px;"
-    >
-    </GmapMap>
-    <div class="btns">
-      <div class="draw-area">
-        <b-button
-          class="maps__btn btn-wide"
-          variant="primary"
-          size="sm"
-          @click.prevent="drawArea"
-          ><font-awesome-icon icon="fa-solid fa-pencil" /> Draw area</b-button
-        >
-      </div>
-      <div ref="forms" :class="{ 'overflow-forms': isResizeDiv }">
-        <b-input-group
-          v-for="(item, i) in items"
-          :key="i"
-          size="sm"
-          class="mt-3 forms-top"
-          @mouseover="hoverPolygon(i)"
-          @mouseleave="unHoverPolygon"
-          novalidate
-        >
-          <b-form-input
-            v-model="item.name"
-            :disabled="item.isDisabledForm"
-            placeholder="Enter name area"
-            v-on:keyup.enter="saveName(item, i)"
-            ref="input"
-            class="google__input"
-            :class="{ 'is-invalid': item.name.length > 2 ? false : true }"
-          ></b-form-input>
+    <div class="gmaps">
+      <GmapMap
+        ref="gmap"
+        :options="optionsMaps"
+        :center="center"
+        :zoom="12"
+        map-type-id="terrain"
+        style="width: 100%; height: 500px; margin-top: 10px"
+      >
+      </GmapMap>
+      <div class="btns">
+        <div class="draw-area">
+          <b-button
+            class="maps__btn btn-wide"
+            variant="primary"
+            size="sm"
+            @click.prevent="drawArea"
+            ><font-awesome-icon icon="fa-solid fa-pencil" /> Draw area</b-button
+          >
+        </div>
+        <div ref="forms" :class="{ 'overflow-forms': isResizeDiv }">
+          <b-input-group
+            v-for="(item, i) in items"
+            :key="i"
+            size="sm"
+            class="mt-3 forms-top"
+            @mouseover="hoverPolygon(i)"
+            @mouseleave="unHoverPolygon"
+            novalidate
+          >
+            <b-form-input
+              v-model="item.name"
+              :disabled="item.isDisabledForm"
+              placeholder="Enter name area"
+              v-on:keyup.enter="saveName(item, i)"
+              ref="input"
+              class="google__input"
+              :class="{ 'is-invalid': item.name.length > 2 ? false : true }"
+            ></b-form-input>
 
-          <b-input-group-append>
-            <b-button
-              size="sm"
-              :variant="item.isDisabledForm ? '' : 'success'"
-              @click="saveName(item, i)"
-              :disabled="!item.name.length > 0"
-              ><b-icon
-                :icon="item.isDisabledForm ? 'pencil-square' : 'check2'"
-              ></b-icon>
-            </b-button>
+            <b-input-group-append>
+              <b-button
+                size="sm"
+                :variant="item.isDisabledForm ? '' : 'success'"
+                @click="saveName(item, i)"
+                :disabled="!item.name.length > 0"
+                ><b-icon
+                  :icon="item.isDisabledForm ? 'pencil-square' : 'check2'"
+                ></b-icon>
+              </b-button>
 
-            <b-button size="sm" variant="danger" @click="delAreaOfIndex(i)"
-              ><b-icon icon="x"></b-icon>
-            </b-button>
-          </b-input-group-append>
-        </b-input-group>
+              <b-button size="sm" variant="danger" @click="delAreaOfIndex(i)"
+                ><b-icon icon="x"></b-icon>
+              </b-button>
+            </b-input-group-append>
+          </b-input-group>
+        </div>
       </div>
     </div>
-    <!-- <div>{{ items }}</div>
-    <b-button variant="success" @click="sendData"
-      >Send data</b-button
-    >
-    <b-button variant="warning" @click="getData"
-      >GET data</b-button
-    >
-    <b-button variant="warning" @click="checkArray"
-      >checkArray</b-button
-    > -->
-  </div>
   </div>
 </template>
+
 <script
   type="text/javascript"
   src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"
@@ -89,9 +81,9 @@ import { getGoogleMapsAPI } from "gmap-vue";
 import VueGoogleAutocomplete from "vue-google-autocomplete";
 
 export default {
-   components: { VueGoogleAutocomplete },
+  components: { VueGoogleAutocomplete },
   name: "GoogleMaps",
-  props:{
+  props: {
     isReady: Boolean,
   },
   data() {
@@ -104,8 +96,9 @@ export default {
       isResizeDiv: false,
       currentPlace: null,
       address: "",
-      center: {lat: 25.6904364, lng: 85.2022902},
-    
+      map: null,
+      center: { lat: 0, lng: 0 },
+
       optionsMaps: {
         draggable: false,
         zoomControl: true,
@@ -121,7 +114,8 @@ export default {
     };
   },
   mounted() {
-   this.$refs.address.focus();
+    this.$refs.address.focus();
+    this.geolocate();
   },
   //  async created() {
   //   try {
@@ -133,48 +127,44 @@ export default {
   //   }
   // },
   methods: {
-   setPlace(place) {
-      this.currentPlace = place;
-    },
-   checkGeo() {
-     
-     console.log("🚀 ~ file: GoogleMaps.vue ~ line 143 ~ checkGeo ~ map", this.map)
-     this.map.setCenter(43.21419597065723, 76.86466162673098, 12);
-   },
-   async getData() {
+    async getData() {
       try {
-      const res = await axios.get(baseURL);
-res.data.forEach((item1)=>{
-this.items.
-  this.items.push(item1);
-})
-      // this.items = res.data;
-      console.log("🚀 ~ file: GoogleMaps.vue ~ line 135 ~ getData ~ this.items", this.items)
-    } catch (e) {
-      console.error(e);
-    }
+        const res = await axios.get(baseURL);
+        res.data.forEach((item1) => {
+          this.items.this.items.push(item1);
+        });
+        // this.items = res.data;
+        console.log(
+          "🚀 ~ file: GoogleMaps.vue ~ line 135 ~ getData ~ this.items",
+          this.items
+        );
+      } catch (e) {
+        console.error(e);
+      }
     },
-    editName(item) {
-      item.isDisabledForm = false;
-    },
-    checkArray(){    
- let chekedForm = this.items.find((item)=> {
-   if(item.isDisabledForm === false){
-     this.isReady = false;
-     return item
-   }
-   });
-  this.$emit('checkArray', {items: this.items, isReady: this.isReady, polygons: this.polygons});
-  console.log("🚀 ~ file: GoogleMaps.vue ~ line 142 ~ checkArray ~ this.polygons", this.polygons)
+    checkArray() {
+      let chekedForm = this.items.find((item) => {
+        if (item.isDisabledForm === false) {
+          this.isReady = false;
+          return item;
+        }
+      });
+      this.$emit("checkArray", {
+        items: this.items,
+        isReady: this.isReady,
+        polygons: this.polygons,
+      });
+      console.log(
+        "🚀 ~ file: GoogleMaps.vue ~ line 142 ~ checkArray ~ this.polygons",
+        this.polygons
+      );
     },
     saveName(item) {
-     
-      if (item.name.length <= 0) {
+      if (item.name.length <= 2) {
         return;
       }
       item.isDisabledForm = !item.isDisabledForm;
-     this.checkArray();
-     
+      this.checkArray();
     },
     unHoverPolygon() {
       this.polygons.forEach((polygon) => {
@@ -284,6 +274,11 @@ this.items.
         }
       );
       this.resizeForms();
+      // this.checkArray();
+      // this.$emit("drawArea", {
+      //   isReady: this.isReady,
+      // });
+      // this.isReady = false;
     },
     resizeForms() {
       let height = this.$refs.forms.clientHeight;
@@ -292,23 +287,30 @@ this.items.
       }
     },
     getAddressData(addressData, placeResultData, id) {
-      console.log("🚀 ~ file: GoogleMaps.vue ~ line 301 ~ getAddressData ~ this.center", this.center)
-   
+      console.log(
+        "🚀 ~ file: GoogleMaps.vue ~ line 301 ~ getAddressData ~ this.center",
+        this.center
+      );
 
-     this.center.lat = addressData.latitude;
-     this.center.lng = addressData.longitude;
-     console.log("🚀 ~ file: GoogleMaps.vue ~ line 301 ~ getAddressData ~ this.center", this.center)
-      },
-    
+      this.center.lat = addressData.latitude;
+      this.center.lng = addressData.longitude;
+      console.log(
+        "🚀 ~ file: GoogleMaps.vue ~ line 301 ~ getAddressData ~ this.center",
+        this.center
+      );
+    },
+    geolocate() {
+      navigator.geolocation.getCurrentPosition((position) => {
+        this.center = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        };
+      });
+    },
   },
-  
+
   computed: {
     google: getGoogleMapsAPI,
-    
-    nameState() {
-      return item.name.length > 2 ? true : false;
-    },
-     
   },
 };
 </script>
