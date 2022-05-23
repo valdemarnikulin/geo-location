@@ -10,7 +10,7 @@
       >
         <h4 class="card-title">Task</h4>
         <b-form-group>
-          <div class="forms__intensy">
+          <div class="forms__intensy" style="grid-template: 1fr/1fr 1fr 1fr">
             <div>
               <label for="nameId"
                 >Name <span class="text-danger">*</span></label
@@ -19,13 +19,14 @@
                 id="nameId"
                 size="sm"
                 v-model="name"
+                
                 placeholder="Enter name"
               ></b-form-input>
             </div>
           </div>
         </b-form-group>
         <b-form-group>
-          <div class="forms__intensy">
+          <div class="forms__intensy" style="grid-template: 1fr/1fr 1fr 1fr">
             <div>
               <label for="datepicker-placeholder"
                 >Select Date Span<span class="text-danger">*</span></label
@@ -98,55 +99,80 @@
               ></b-form-input>
             </div>
             <div>
-              <label for="selectDay"></label>
-              <b-form-select
-                size="sm"
+              <Treeselect
                 input-id="selectDay"
-                v-model="selected"
-                :options="options"
-              ></b-form-select>
+                v-model="selectedDay"
+                :options="optionsDay"
+                :clearable="false"
+              />
+            </div>
+            <div>
+              <Treeselect
+                input-id="selectCome"
+                v-model="selectedCome"
+                :options="optionsCome"
+                :clearable="false"
+              />
+            </div>
+            <div>
+              <label for="selectDayNight"><strong>More tests at</strong></label>
+              <Treeselect
+                :clearable="false"
+                input-id="selectDayNight"
+                v-model="selectedDayNight"
+                :options="optionsDayNight"
+              />
             </div>
           </div>
         </b-form-group>
-        <b-form-checkbox v-model="showMap" toggle switch
-          >Specify on the map</b-form-checkbox
+        <b-form-checkbox v-model="showMap" toggle
+          >Test in a certain area, in the city.</b-form-checkbox
         >
         <google-maps class="mt-4" v-if="showMap == true"  @checkArray="changeState"></google-maps>
         <b-form-group class="my-4">
-          <label for="intensy"
+          <label for="intensy" style="font-size:inherit"
             >Testing Sources<span class="text-danger">*</span></label
           >
-          <div style="opacity: 0.7">
+          <div style="opacity: 0.7; font-size: 12px">
             You can create your own testing source <a href="#">here</a>
           </div>
           <div class="my-2">
             <a class="links mr-4" href="#">Clear All</a>
             <a class="links" href="#">Close All</a>
           </div>
-          <div class="forms__intensy">
-            <div class="forms__intensy">
-              <b-form-select
-                size="sm"
+          <div  >
+            <div class="forms__intensy" style="grid-template: 1fr/1fr 1fr 1fr 1.5fr">
+              <Treeselect
+              :multiple="true"
+                :clearable="false"
                 v-model="selectedFiles"
                 :options="optionsFiles"
-              >
-              </b-form-select>
-              <b-form-select
-                size="sm"
+              />
+              
+              <Treeselect
+              :multiple="true"
+                :clearable="false"
                 v-model="selectedUrls"
                 :options="optionsUrls"
-              >
-              </b-form-select>
-              <b-form-select
-                size="sm"
+              />
+              
+              <Treeselect
+              :multiple="true"
+                :clearable="false"
                 v-model="selectedCountry"
                 :options="optionsCountry"
-              >
-              </b-form-select>
+                :show-count="true"
+              ><label slot="optionsCountry" 
+              slot-scope="{ shouldShowCount, count, labelClassName, countClassName }" 
+              :class="labelClassName">
+    
+    <span v-if="shouldShowCount" :class="countClassName">{{ count }}</span>
+  </label></Treeselect>
+              
             </div>
           </div>
         </b-form-group>
-        <b-button class="mr-3" variant="primary" :disabled="isReady" @click="sendData"
+        <b-button class="mr-3" variant="primary" :disabled="isReady || checkName" @click="sendData"
           ><font-awesome-icon class="mr-1" icon="fa-solid fa-pen-to-square" />
           Ready</b-button
         >
@@ -159,57 +185,74 @@
 <script>
 import GoogleMaps from "./GoogleMaps.vue";
 import axios from "axios";
+  import Treeselect from '@riophae/vue-treeselect'
+  import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 const baseURL = "http://localhost:3000/media";
 export default {
-  components: { GoogleMaps },
+  components: { GoogleMaps, Treeselect },
   data() {
     return {
       numberTasks: 5,
-      selected: null,
-      selectedCountry: null,
+      selectedDay: ['a'],
+      selectedCome: ['d'],
+      selectedDayNight: ['e'],
+      selectedCountry: ['f'],
       selectedFiles: null,
       selectedUrls: null,
       showMap: false,
-      name: null,
+      name: '',
       datepicker: null,
       timepicker: null,
     isReady: true,
     items: [],
     polygons:[],
       optionsCountry: [
-        { text: "Countries" },
-        { text: "Every 5 days" },
-        { text: "Every week" },
+        { id:"f", label: "Countries", children:[{
+          id:"f-kaz",
+          label:"Kazakhstan"
+        },
+        {id:"f-us",
+          label:"USA"},
+          {id:"f-rus",
+          label:"Russia"}]},
+       
       ],
       optionsFiles: [
-        { text: "Files" },
-        { text: "Every 5 days" },
-        { text: "Every week" },
+        { id:"j", label: "Files" },
+        { id:"k", label: "Every 5 days" },
+        { id:"l", label: "Every week" },
       ],
       optionsUrls: [
-        { text: "URLs" },
-        { text: "Every 5 days" },
-        { text: "Every week" },
+        { id:"z", label: "URLs" },
+        { id:"x", label: "Every 5 days" },
+        { id:"v", label: "Every week" },
       ],
-      options: [
-        { text: "Every 3 days" },
-        { text: "Every 5 days" },
-        { text: "Every week" },
+      optionsDay: [
+        {label: "Per Day", id:"a" },
+        { label: "For Period", id:"b"},
+        { label: "As soon as possible", id:"c"},
+      ],
+      optionsCome: [
+        {label: "Come Down", id:"d"}
+      ],
+      optionsDayNight: [
+        {label: "Day", id:"e"},
+        {label: "Night", id:"f"}
       ],
       valueType: ["All Net Types"],
       valueOperators: ["KZ_KCELL"],
     };
   },
+  
   methods: {
+    dateNow() {
+      this.datepicker = Date.now();
+    },
     changeState(data){
-      // this.isReady = data;
+     
       this.isReady = data.isReady;
       this.items = data.items;
       this.polygons = data.polygons;
-      console.log("🚀 ~ file: NewTask.vue ~ line 209 ~ changeState ~ data.polygons", data.polygons)
-      console.log("🚀 ~ file: NewTask.vue ~ line 207 ~ changeState ~ data.items", data.items)
-      console.log("🚀 ~ file: NewTask.vue ~ line 206 ~ changeState ~ data.isReady", data.isReady)
-    
     },
     async sendData() {
             try {
@@ -229,6 +272,16 @@ export default {
     toggleShowMap() {
       this.showMap = !this.showMap;
     },
+  },
+  computed: {
+    checkName() {
+      if(this.name.length === 0){
+        return  true;
+      } else {
+        return  false;
+      }
+      // (this.name.length === 0) ? this.isReady = true : this.isReady = false,
+      },
   },
 };
 </script>

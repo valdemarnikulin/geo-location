@@ -1,15 +1,6 @@
 
 <template>
   <div>
-    <vue-google-autocomplete
-      ref="address"
-      id="map"
-      classname="form-control"
-      placeholder="Please type your cities"
-      v-on:placechanged="getAddressData"
-      types="(cities)"
-      style="width: 50%"
-    ></vue-google-autocomplete>
     <div class="gmaps">
       <GmapMap
         ref="gmap"
@@ -20,6 +11,16 @@
         style="width: 100%; height: 500px; margin-top: 10px"
       >
       </GmapMap>
+      <vue-google-autocomplete
+      ref="address"
+      id="map"
+      class="autocomplete-google"
+      classname="form-control"
+      placeholder="Please type your cities"
+      v-on:placechanged="getAddressData"
+      types="(cities)"
+      style="width: 50%"
+    ></vue-google-autocomplete>
       <div class="btns">
         <div class="draw-area">
           <b-button
@@ -47,6 +48,7 @@
               v-on:keyup.enter="saveName(item, i)"
               ref="input"
               class="google__input"
+              style="padding-right: 0 !important"
               :class="{ 'is-invalid': item.name.length > 2 ? false : true }"
             ></b-form-input>
 
@@ -55,7 +57,7 @@
                 size="sm"
                 :variant="item.isDisabledForm ? '' : 'success'"
                 @click="saveName(item, i)"
-                :disabled="!item.name.length > 0"
+                :disabled="item.name.length <= 2"
                 ><b-icon
                   :icon="item.isDisabledForm ? 'pencil-square' : 'check2'"
                 ></b-icon>
@@ -65,6 +67,9 @@
                 ><b-icon icon="x"></b-icon>
               </b-button>
             </b-input-group-append>
+            
+            <!-- <div v-if="item.name.length <= 2"
+            class="error">Error</div> -->
           </b-input-group>
         </div>
       </div>
@@ -105,10 +110,11 @@ export default {
         scrollwheel: false,
         disableDoubleClickZoom: false,
         fullscreenControl: true,
+        streetViewControl: false,
         mapTypeControl: false,
-        scaleControl: true,
-        rotateControl: false,
-        disableDefaultUi: false, // not need
+        // scaleControl: false,
+        // rotateControl: false,
+        // disableDefaultUi: false, // not need
         clickableIcons: false,
       },
     };
@@ -142,27 +148,9 @@ export default {
         console.error(e);
       }
     },
-    checkArray() {
-      let chekedForm = this.items.find((item) => {
-        if (item.isDisabledForm === false) {
-          this.isReady = false;
-          return item;
-        }
-      });
-      this.$emit("checkArray", {
-        items: this.items,
-        isReady: this.isReady,
-        polygons: this.polygons,
-      });
-      console.log(
-        "🚀 ~ file: GoogleMaps.vue ~ line 142 ~ checkArray ~ this.polygons",
-        this.polygons
-      );
-    },
+    
+    
     saveName(item) {
-      if (item.name.length <= 2) {
-        return;
-      }
       item.isDisabledForm = !item.isDisabledForm;
       this.checkArray();
     },
@@ -183,8 +171,13 @@ export default {
       let removePoly = this.polygons.splice(index, 1);
       removePoly[0].setMap(null);
       this.items.splice(index, 1);
+      this.lastItemInput();
     },
     drawFreeHand() {
+      this.isReady = true;
+      this.$emit("checkArray", {
+        isReady: this.isReady,
+      })
       //the polygon
       let poly = new google.maps.Polyline({
         map: this.$refs.gmap.$mapObject,
@@ -252,13 +245,13 @@ export default {
 
     disable() {
       (this.optionsMaps.draggable = false),
-        (this.optionsMaps.zoomControl = false),
+        // (this.optionsMaps.zoomControl = false),
         (this.optionsMaps.scrollwheel = false),
         (this.optionsMaps.disableDoubleClickZoom = false);
     },
     enable() {
       (this.optionsMaps.draggable = true),
-        (this.optionsMaps.zoomControl = true),
+        // (this.optionsMaps.zoomControl = true),
         (this.optionsMaps.scrollwheel = true),
         (this.optionsMaps.disableDoubleClickZoom = true);
     },
@@ -274,7 +267,7 @@ export default {
         }
       );
       this.resizeForms();
-      // this.checkArray();
+      this.checkArray();
       // this.$emit("drawArea", {
       //   isReady: this.isReady,
       // });
@@ -282,7 +275,7 @@ export default {
     },
     resizeForms() {
       let height = this.$refs.forms.clientHeight;
-      if (height > 280) {
+      if (height > 275) {
         this.isResizeDiv = true;
       }
     },
@@ -311,6 +304,30 @@ export default {
 
   computed: {
     google: getGoogleMapsAPI,
+   checkArray() {
+      this.items.find((item) => {
+        if (item.isDisabledForm === false) {
+         return this.isReady = true;
+          // return item;
+        } else {
+         return this.isReady = false;
+        }
+      });
+      
+      this.$emit("checkArray", {
+        items: this.items,
+        isReady: this.isReady,
+        polygons: this.polygons,
+      });
+    },
+    lastItemInput() {
+(this.items.length === 0) ? this.isReady = true : this.isReady = false;
+console.log("🚀 ~ file: GoogleMaps.vue ~ line 323 ~ lastItemInput ~ this.items.length ", this.items.length )
+console.log("🚀 ~ file: GoogleMaps.vue ~ line 322 ~ lastItemInput ~ this.isReady", this.isReady)
+this.$emit('checkArray', {
+  isReady: this.isReady,
+})
+    },
   },
 };
 </script>

@@ -1,14 +1,24 @@
 label {
     font-weight: bold;
   }
+  .vue-treeselect__multi-value-item{
+    background: none;
+    color: #000;
+  }
+  .form-control,.vue-treeselect__control{
+    height: 37px!important;
+    border-radius: 0.25rem!important;
+  }
   .forms__intensy {
     display: grid;
     gap: 5px;
-    grid-template: 1fr/1fr 1fr 1fr;
+    grid-template: 1fr/1fr 1fr 1fr 1fr 2fr;
     align-items: end;
   }
   .links {
     text-decoration: none;
+    font-size: 0.94rem;
+    color: #0e0f3e;
   }
   .btn-primary.btn-shadow,
   .btn-primary.btn-shadow:hover {
@@ -57,4 +67,7 @@ label {
     font-size: 0.94rem;
     padding-left: 18.5rem !important;
     padding-right: 1rem;
+  }
+  .custom-select{
+    background-color: #fff !important;
   }

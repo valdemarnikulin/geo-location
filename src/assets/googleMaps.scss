@@ -1,6 +1,11 @@
 $red: #dc3545;
-// .was-validated .form-control:invalid,
-.form-control.is-invalid {
+.is-invalid-input{
+  border: 2px solid #dc3545;
+}
+.error{
+  color:#dc3545;
+}
+.form-control{
   padding-right: 0 !important;
 }
 .form-control,
@@ -18,15 +23,22 @@ $red: #dc3545;
 .input-group-append {
   background-color: #fff;
 }
+.autocomplete-google{
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: 10px;
+}
 .btns {
   display: flex;
   align-items: flex-start;
   flex-direction: column;
+  min-width: 235px;
   gap: 10px;
-  margin: 20px;
+  margin: 10px;
   position: absolute;
   top: 0;
-  left: 0;
+  right: 0;
 }
 .btn-primary {
   -webkit-box-shadow: 0 0.125rem 0.625rem rgba(14, 15, 62, 0.6), 0 0.0625rem 0.125rem #0e0f3e;
@@ -64,7 +76,7 @@ $red: #dc3545;
   border-radius: 0.25rem;
 }
 .overflow-forms {
-  height: 330px;
+  height: 320px;
   overflow: auto;
   padding-right: 10px;
 }

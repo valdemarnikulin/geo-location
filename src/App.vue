@@ -1,5 +1,3 @@
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDLEvPNQnvOtKO4wp1XBfVTQdZIsf3gr6U&libraries=places"></script>
-
 <template>
   <div id="app" class="app-vue">
     <nav-header></nav-header>
