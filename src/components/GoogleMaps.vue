@@ -74,6 +74,7 @@
         </div>
       </div>
     </div>
+    <div>{{ items }}</div>
   </div>
 </template>
 
@@ -225,7 +226,7 @@ export default {
             (this.item = {
               name: "",
               isDisabledForm: false,
-              coords: coords.Coordinates,
+              coords: coords,
             })
           );
           let map = this.$refs.gmap.$mapObject;
@@ -233,16 +234,30 @@ export default {
         }
       );
     },
-    getPolygonCoords(poly) {
-      let len = poly.getPath().getLength();
-      let Coordinates = "";
-      for (var i = 0; i < len; i++) {
-        Coordinates += "{" + poly.getPath().getAt(i).toUrlValue(6) + "}, ";
-      }
-      let coords = { Coordinates };
-      return coords;
-    },
+    // getPolygonCoords(poly) {
+    //   let len = poly.getPath().getLength();
+    //   let Coordinates = "";
+    //   for (var i = 0; i < len; i++) {
+    //     Coordinates += "{" + poly.getPath().getAt(i).toUrlValue(6) + "}, ";
+    //   }
+    //   let coords = { Coordinates };
+    //   return coords;
+    // },
+getPolygonCoords(poly) {
+     let paths = poly.getPath();
 
+     let arrayCoordinates = [];
+   for(let i=0; i<paths.length;i++){
+     let Coordinates = {
+       lat: paths.getAt(i).lat(),
+       lng: paths.getAt(i).lng()
+     }
+     arrayCoordinates.push(Coordinates)
+   }
+     console.log("🚀 ~ file: GoogleMaps.vue ~ line 241 ~ getPolygonCoords ~ arrayCoordinates", arrayCoordinates)
+   return arrayCoordinates;
+  
+    },
     disable() {
       (this.optionsMaps.draggable = false),
         // (this.optionsMaps.zoomControl = false),
