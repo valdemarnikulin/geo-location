@@ -55,10 +55,12 @@
 
           <b-button
             style="padding: 0.375rem 1.5rem"
-            v-b-toggle.collapse-2
+          
             class="m-1 shadow"
             size="sm"
             variant="primary"
+            @click="scrollToNewTask"
+            :disabled="this.$store.state.taskModule.isNewTask"
             ><b-icon icon="plus" class="opacity-7 pr-2" scale="3" />
             New
           </b-button>
@@ -133,6 +135,9 @@
 </template>
 
 <script>
+import { mapMutations } from 'vuex';
+
+
 export default {
   data() {
     return {
@@ -280,7 +285,20 @@ export default {
       ],
     };
   },
+  methods: {
+    ...mapMutations(['showNewTask']),
+scrollToNewTask() {
+  console.log("$store.state.taskModule.isNewTask", this.$store.state.taskModule.isNewTask)
+  this.showNewTask();
+  console.log("🚀 ~ file: OldTasks.vue ~ line 291 ~ scrollToNewTask ~ this.showNewTask();", this.showNewTask)
+  this.$refs.newTask.scrollIntoView()
+  
+console.log("🚀 ~ file: OldTasks.vue ~ line 287 ~ scrollToNewTask ~ this.$refs.newTask", this.$refs.newTask)
+
+},
+  },
 };
+
 </script>
 
 <style>

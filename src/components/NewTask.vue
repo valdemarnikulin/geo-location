@@ -1,9 +1,12 @@
 //send data
 //input with coords
 <template>
-  <div class="new-task">
-    <b-collapse class="map__wrapper" id="collapse-2">
+  <div class="new-task" v-if="this.$store.state.taskModule.isNewTask" >
+    <!-- <b-collapse class="map__wrapper">
+      <transition name="fade"> -->
+        <div >
       <b-card
+      ref="newTask"
         class="mx-3 my-4 velmld-parent shadow"
         shadow="lg"
         body-class="text-left"
@@ -186,13 +189,14 @@
           class="mr-3"
           variant="primary"
           :disabled="$store.getters.getButtonVisible"
-          @click="sendData"
+          @click="sendDatas"
           ><font-awesome-icon class="mr-1" icon="fa-solid fa-pen-to-square" />
           Ready</b-button
         >
         <b-button variant="danger">Close</b-button>
       </b-card>
-    </b-collapse>
+      </div>
+     
   </div>
 </template>
 
@@ -265,7 +269,9 @@ export default {
     dateNow() {
       this.datepicker = Date.now();
     },
-
+sendDatas() {
+  this.sendData();
+},
     // changeState(data) {
     //   this.isReady = data.isReady;
     //   this.items = data.items;
