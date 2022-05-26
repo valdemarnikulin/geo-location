@@ -23,7 +23,9 @@
     "google-maps-drawing-tools": "^1.0.0",
     "vue": "^2.6.14",
     "vue-axios": "^3.4.1",
-    "vue-google-autocomplete": "^1.1.3"
+    "vue-google-autocomplete": "^1.1.3",
+    "vue-treeselect": "^1.0.7",
+    "vuex": "^3.6.2"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",

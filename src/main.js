@@ -6,23 +6,23 @@ import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
 // import { library } from "@fortawesome/fontawesome-svg-core";
 import { library } from "@fortawesome/fontawesome-svg-core";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
-import { faPencil } from "@fortawesome/free-solid-svg-icons";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
-import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
-import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
-import { faBars } from "@fortawesome/free-solid-svg-icons";
-import { faAngleRight } from "@fortawesome/free-solid-svg-icons";
-import { faCheck } from "@fortawesome/free-solid-svg-icons";
-
-import { faTowerBroadcast } from "@fortawesome/free-solid-svg-icons";
-import { faGlobe } from "@fortawesome/free-solid-svg-icons";
-import { faComments } from "@fortawesome/free-solid-svg-icons";
-
+import { faXmark,
+  faPencil,
+  faPlus,
+  faPenToSquare,
+  faTrashCan,
+  faBars,
+  faAngleRight,
+  faCheck,
+  faTowerBroadcast,
+  faGlobe,
+  faComments
+} from "@fortawesome/free-solid-svg-icons";
 
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import axios from 'axios';
 import VueAxios from 'vue-axios';
+import store from './store';
 Vue.use(VueAxios, axios);
 library.add(faXmark, faPencil, faPlus, faPenToSquare, faTrashCan, faBars, faAngleRight, faTowerBroadcast, faGlobe, faCheck, faComments );
 Vue.component("font-awesome-icon", FontAwesomeIcon);
@@ -70,4 +70,5 @@ Vue.use(BootstrapVue);
 Vue.use(IconsPlugin);
 new Vue({
   render: (h) => h(App),
+  store
 }).$mount("#app");

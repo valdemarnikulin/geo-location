@@ -12,15 +12,15 @@
       >
       </GmapMap>
       <vue-google-autocomplete
-      ref="address"
-      id="map"
-      class="autocomplete-google"
-      classname="form-control"
-      placeholder="Please type your cities"
-      v-on:placechanged="getAddressData"
-      types="(cities)"
-      style="width: 50%"
-    ></vue-google-autocomplete>
+        ref="address"
+        id="map"
+        class="autocomplete-google"
+        classname="form-control"
+        placeholder="Please type your cities"
+        v-on:placechanged="getAddressData"
+        types="(cities)"
+        style="width: 50%"
+      ></vue-google-autocomplete>
       <div class="btns">
         <div class="draw-area">
           <b-button
@@ -33,7 +33,7 @@
         </div>
         <div ref="forms" :class="{ 'overflow-forms': isResizeDiv }">
           <b-input-group
-            v-for="(item, i) in items"
+            v-for="(item, i) in this.$store.state.mapsModule.items"
             :key="i"
             size="sm"
             class="mt-3 forms-top"
@@ -67,14 +67,14 @@
                 ><b-icon icon="x"></b-icon>
               </b-button>
             </b-input-group-append>
-            
+
             <!-- <div v-if="item.name.length <= 2"
             class="error">Error</div> -->
           </b-input-group>
         </div>
       </div>
     </div>
-    <div>{{ items }}</div>
+    <div>{{ this.$store.state.mapsModule.items }}</div>
   </div>
 </template>
 
@@ -85,13 +85,14 @@
 <script>
 import { getGoogleMapsAPI } from "gmap-vue";
 import VueGoogleAutocomplete from "vue-google-autocomplete";
+import { mapActions, mapMutations } from "vuex";
 
 export default {
   components: { VueGoogleAutocomplete },
   name: "GoogleMaps",
-  props: {
-    isReady: Boolean,
-  },
+  // props: {
+  //   isReady: Boolean,
+  // },
   data() {
     return {
       items: [],
@@ -134,6 +135,7 @@ export default {
   //   }
   // },
   methods: {
+    ...mapMutations(["activeButton", "unActiveButton"]),
     async getData() {
       try {
         const res = await axios.get(baseURL);
@@ -149,11 +151,10 @@ export default {
         console.error(e);
       }
     },
-    
-    
+
     saveName(item) {
       item.isDisabledForm = !item.isDisabledForm;
-      this.checkArray();
+      // this.checkArray();
     },
     unHoverPolygon() {
       this.polygons.forEach((polygon) => {
@@ -171,14 +172,20 @@ export default {
     delAreaOfIndex(index) {
       let removePoly = this.polygons.splice(index, 1);
       removePoly[0].setMap(null);
-      this.items.splice(index, 1);
-      this.lastItemInput();
+      this.$store.state.mapsModule.items.splice(index, 1);
+      // this.lastItemInput();
     },
     drawFreeHand() {
-      this.isReady = true;
-      this.$emit("checkArray", {
-        isReady: this.isReady,
-      })
+      this.activeButton();
+      console.log(
+        "🚀 ~ file: GoogleMaps.vue ~ line 180 ~ drawFreeHand ~ this.changeIsReady",
+        this.activeButton
+      );
+      console.log("isReady", this.$store.state.isReady);
+      // this.isReady = true;
+      // this.$emit("checkArray", {
+      //   isReady: this.isReady,
+      // });
       //the polygon
       let poly = new google.maps.Polyline({
         map: this.$refs.gmap.$mapObject,
@@ -222,13 +229,27 @@ export default {
           this.polygons.push(poly);
           let coords = this.getPolygonCoords(poly);
 
-          this.items.push(
-            (this.item = {
-              name: "",
-              isDisabledForm: false,
-              coords: coords,
-            })
+          // this.items.push(
+          //   (this.item = {
+          //     name: "",
+          //     isDisabledForm: false,
+          //     coords: coords,
+          //   })
+          // );
+          console.log(
+            "🚀 ~ file: GoogleMaps.vue ~ line 240 ~ drawFreeHand ~ this.$store.state.items",
+            this.$store.state.mapsModule.items
           );
+          this.$store.state.mapsModule.items.push({
+            name: "",
+            isDisabledForm: false,
+            coords: coords,
+          });
+          console.log(
+            "🚀 ~ file: GoogleMaps.vue ~ line 248 ~ drawFreeHand ~  this.$store.state.mapsModule.items",
+            this.$store.state.mapsModule.items
+          );
+
           let map = this.$refs.gmap.$mapObject;
           map.setOptions({ draggableCursor: "default" });
         }
@@ -243,20 +264,22 @@ export default {
     //   let coords = { Coordinates };
     //   return coords;
     // },
-getPolygonCoords(poly) {
-     let paths = poly.getPath();
+    getPolygonCoords(poly) {
+      let paths = poly.getPath();
 
-     let arrayCoordinates = [];
-   for(let i=0; i<paths.length;i++){
-     let Coordinates = {
-       lat: paths.getAt(i).lat(),
-       lng: paths.getAt(i).lng()
-     }
-     arrayCoordinates.push(Coordinates)
-   }
-     console.log("🚀 ~ file: GoogleMaps.vue ~ line 241 ~ getPolygonCoords ~ arrayCoordinates", arrayCoordinates)
-   return arrayCoordinates;
-  
+      let arrayCoordinates = [];
+      for (let i = 0; i < paths.length; i++) {
+        let Coordinates = {
+          lat: paths.getAt(i).lat(),
+          lng: paths.getAt(i).lng(),
+        };
+        arrayCoordinates.push(Coordinates);
+      }
+      console.log(
+        "🚀 ~ file: GoogleMaps.vue ~ line 241 ~ getPolygonCoords ~ arrayCoordinates",
+        arrayCoordinates
+      );
+      return arrayCoordinates;
     },
     disable() {
       (this.optionsMaps.draggable = false),
@@ -282,7 +305,7 @@ getPolygonCoords(poly) {
         }
       );
       this.resizeForms();
-      this.checkArray();
+      // this.checkArray();
       // this.$emit("drawArea", {
       //   isReady: this.isReady,
       // });
@@ -319,30 +342,35 @@ getPolygonCoords(poly) {
 
   computed: {
     google: getGoogleMapsAPI,
-   checkArray() {
-      this.items.find((item) => {
-        if (item.isDisabledForm === false) {
-         return this.isReady = true;
-          // return item;
-        } else {
-         return this.isReady = false;
-        }
-      });
-      
-      this.$emit("checkArray", {
-        items: this.items,
-        isReady: this.isReady,
-        polygons: this.polygons,
-      });
-    },
-    lastItemInput() {
-(this.items.length === 0) ? this.isReady = true : this.isReady = false;
-console.log("🚀 ~ file: GoogleMaps.vue ~ line 323 ~ lastItemInput ~ this.items.length ", this.items.length )
-console.log("🚀 ~ file: GoogleMaps.vue ~ line 322 ~ lastItemInput ~ this.isReady", this.isReady)
-this.$emit('checkArray', {
-  isReady: this.isReady,
-})
-    },
+    // checkArray() {
+    //   // this.items.find((item) => {
+    //   //   if (item.isDisabledForm === false) {
+    //   //     return (this.isReady = true);
+    //   //     // return item;
+    //   //   } else {
+    //   //     return (this.isReady = false);
+    //   //   }
+    //   // });
+    //   // this.$emit("checkArray", {
+    //   //   items: this.items,
+    //   //   isReady: this.isReady,
+    //   //   polygons: this.polygons,
+    //   // });
+    // },
+    // lastItemInput() {
+    //   // this.items.length === 0 ? (this.isReady = true) : (this.isReady = false);
+    //   // console.log(
+    //   //   "🚀 ~ file: GoogleMaps.vue ~ line 323 ~ lastItemInput ~ this.items.length ",
+    //   //   this.items.length
+    //   // );
+    //   // console.log(
+    //   //   "🚀 ~ file: GoogleMaps.vue ~ line 322 ~ lastItemInput ~ this.isReady",
+    //   //   this.isReady
+    //   // );
+    //   // this.$emit("checkArray", {
+    //   //   isReady: this.isReady,
+    //   // });
+    // },
   },
 };
 </script>
