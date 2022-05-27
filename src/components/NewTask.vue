@@ -225,6 +225,7 @@ export default {
       // isReady: true,
       // items: [],
       // polygons: [],
+      isSend: false,
       optionsCountry: [
         {
           id: "f",
@@ -271,6 +272,8 @@ export default {
     },
 sendDatas() {
   this.sendData();
+  this.isSend = true;
+  console.log("🚀 ~ file: NewTask.vue ~ line 276 ~ sendDatas ~ this.isSend", this.isSend)
 },
     // changeState(data) {
     //   this.isReady = data.isReady;

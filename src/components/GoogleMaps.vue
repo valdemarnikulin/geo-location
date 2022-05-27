@@ -92,9 +92,12 @@ import { mapActions, mapMutations } from "vuex";
 export default {
   components: { VueGoogleAutocomplete },
   name: "GoogleMaps",
-  // props: {
-  //   isReady: Boolean,
-  // },
+  props: {
+    isSend: {Boolean,
+    
+    deep: true,
+    },
+  },
   data() {
     return {
       // items: [],
@@ -142,7 +145,27 @@ export default {
   //     console.error(e);
   //   }
   // },
+  watch: {
+isSend(newVal, oldVal) {
+console.log("🚀 ~ file: GoogleMaps.vue ~ line 147 ~ oldVal", oldVal)
+console.log("🚀 ~ file: GoogleMaps.vue ~ line 147 ~ newVal", newVal)
+console.log("🚀 ~ file: GoogleMaps.vue ~ line 147 ~ isSend ~ isSend", this.isSend)
+  if(isSend == true){
+this.polygons.forEach((poly)=>{
+  poly.setMap(null);
+})
+}
+  console.log("🚀 ~ file: GoogleMaps.vue ~ line 152 ~ this.polygons.forEach ~ this.polygons", this.polygons)
+}
+  },
   methods: {
+// isSendFunc() {
+//   if(this.isSend){
+//     this.polygons.forEach((poly)=>{
+//   poly.setMap(null);
+// })
+//   }
+// },
     ...mapMutations(["activeButton", "unActiveButton"]),
     ...mapActions(["getData"]),
     async getDatas() {
@@ -155,7 +178,7 @@ export default {
       console.log("this.polygons", this.polygons);
       newPolygons.forEach((poly) => {
         console.log("poly", poly);
-        new google.maps.Polygon({
+       let newPoly = new google.maps.Polygon({
           map: this.$refs.gmap.$mapObject,
           path: poly.coords,
           strokeColor: "#0e0f3e",
@@ -165,18 +188,19 @@ export default {
           fillOpacity: 0.35,
           editable: false,
         });
-        this.polygons.push(poly);
+       console.log("🚀 ~ file: GoogleMaps.vue ~ line 168 ~ newPolygons.forEach ~ newPoly", newPoly)
+        this.polygons.push(newPoly);
         console.log(
           "🚀 ~ file: GoogleMaps.vue ~ line 169 ~ newPolygons.forEach ~ this.polygons",
           this.polygons
         );
       });
       console.log("newPolygons after draw", newPolygons);
-      this.polygons = [...newPolygons];
-      console.log(
-        "🚀 ~ file: GoogleMaps.vue ~ line 171 ~ getDatas ~ this.polygons",
-        this.polygons
-      );
+      // this.polygons = [...newPolygons];
+      // console.log(
+      //   "🚀 ~ file: GoogleMaps.vue ~ line 171 ~ getDatas ~ this.polygons",
+      //   this.polygons
+      // );
       // [this.polygons, ...newPolygons];
       // console.log(
       //   "🚀 ~ file: GoogleMaps.vue ~ line 171 ~ getDatas ~ this.polygons",

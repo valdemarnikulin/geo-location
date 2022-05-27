@@ -7,6 +7,7 @@ export default {
     state: {
         isReady: true,
         items: [],
+        
         // map: this.$refs.gmap.$mapObject,
     },
     getters: {//computed
