@@ -55,7 +55,6 @@
 
           <b-button
             style="padding: 0.375rem 1.5rem"
-          
             class="m-1 shadow"
             size="sm"
             variant="primary"
@@ -135,8 +134,7 @@
 </template>
 
 <script>
-import { mapMutations } from 'vuex';
-
+import { mapMutations } from "vuex";
 
 export default {
   data() {
@@ -286,19 +284,26 @@ export default {
     };
   },
   methods: {
-    ...mapMutations(['showNewTask']),
-scrollToNewTask() {
-  console.log("$store.state.taskModule.isNewTask", this.$store.state.taskModule.isNewTask)
-  this.showNewTask();
-  console.log("🚀 ~ file: OldTasks.vue ~ line 291 ~ scrollToNewTask ~ this.showNewTask();", this.showNewTask)
-  this.$refs.newTask.scrollIntoView()
-  
-console.log("🚀 ~ file: OldTasks.vue ~ line 287 ~ scrollToNewTask ~ this.$refs.newTask", this.$refs.newTask)
+    ...mapMutations(["showNewTask"]),
+    scrollToNewTask() {
+      console.log(
+        "$store.state.taskModule.isNewTask",
+        this.$store.state.taskModule.isNewTask
+      );
+      this.showNewTask();
+      console.log(
+        "🚀 ~ file: OldTasks.vue ~ line 291 ~ scrollToNewTask ~ this.showNewTask();",
+        this.showNewTask
+      );
+      this.$refs.newTask.scrollIntoView();
 
-},
+      console.log(
+        "🚀 ~ file: OldTasks.vue ~ line 287 ~ scrollToNewTask ~ this.$refs.newTask",
+        this.$refs.newTask
+      );
+    },
   },
 };
-
 </script>
 
 <style>
