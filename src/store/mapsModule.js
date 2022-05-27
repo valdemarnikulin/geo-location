@@ -5,9 +5,10 @@ const baseURL = "http://localhost:3000/media";
 export default {
     
     state: {
+        nameTask:"",
         isReady: true,
         items: [],
-        
+    polygons:[],
         // map: this.$refs.gmap.$mapObject,
     },
     getters: {//computed
@@ -29,17 +30,22 @@ getButtonVisible: (state) => state.isReady,
             console.log("🚀 ~ file: mapsModule.js ~ line 23 ~ sendData ~ state", state)
             try {
                 console.log("🚀 ~ file: mapsModule.js ~ line 24 ~ sendData ~ state.items", state.state.items)
-            const res = await axios.post(baseURL, state.state.items);
-            
-            
-            state.state.items = [...state.state.items, res.data];
-            console.log("🚀 ~ file: mapsModule.js ~ line 27 ~ sendData ~ state.items", state.items)
+                
+                const params = {
+                    nameTask: state.nameTask,
+                    Areas: state.state.items
+                }
+                const res = await axios.post(baseURL, params);
             console.log("🚀 ~ file: mapsModule.js ~ line 25 ~ sendData ~ res", res)
+            
+            
+            // state.state.items = {...state.state.items, data:res.data};
+            // console.log("🚀 ~ file: mapsModule.js ~ line 27 ~ sendData ~ state.items", state.state.items)
       
               state.state.items = [];
-            //   this.polygons.forEach((poly) => {
-            //     poly.setMap(null);
-            //   });
+              state.state.polygons.forEach((poly) => {
+                poly.setMap(null);
+              });
             } catch (e) {
               console.error(e);
             }

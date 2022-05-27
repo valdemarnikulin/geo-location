@@ -82,7 +82,8 @@
           </p>
         </div>
       </div>
-      <b-table responsive="sm" :items="items" :fields="fields">
+      <b-button @click="checkItems">Check Items</b-button>
+      <b-table responsive="sm" :items="this.$store.state.oldTask.oldTasks" :fields="fields">
         <template #cell(Status)="{ item }">
           <span
             class="badge badge-primary align-text-bottom ml-1"
@@ -149,142 +150,11 @@ export default {
         "Actions",
       ],
       isswitch: null,
-      items: [
-        {
-          Name: "test1000",
-          data: "2021 Dec 02 – 2022 Jan 02 ",
-          time: "00:00 – 23:59",
-          type_of_test: "site, files	",
-          net_type: "All Net Types	",
-          intensity: "100",
-          Status: "NEW",
-          on_off: { on: true, off: false },
-        },
-        {
-          Name: "tetetest",
-          data: "2021 Dec 02 – 2022 Jan 02 ",
-          time: "00:00 – 23:59",
-          type_of_test: "site",
-          net_type: "All Net Types	",
-          intensity: "3",
-          Status: "NEW",
-          on_off: "on/off",
-        },
-        {
-          Name: "popopopop",
-          data: "2021 Dec 02 – 2022 Jan 02 ",
-          time: "00:00 – 23:59",
-          type_of_test: "files",
-          net_type: "All Net Types	",
-          intensity: "30",
-          Status: "NEW",
-          on_off: "on/off",
-        },
-        {
-          Name: "qwerty",
-          data: "2021 Dec 02 – 2022 Jan 02 ",
-          time: "00:00 – 23:59",
-          type_of_test: "files",
-          net_type: "All Net Types	",
-          intensity: "5",
-          Status: "NEW",
-          on_off: "on/off",
-        },
-        {
-          Name: "mal",
-          data: "2021 Dec 02 – 2022 Jan 02 ",
-          time: "00:00 – 23:59",
-          type_of_test: "files",
-          net_type: "All Net Types	",
-          intensity: "30",
-          Status: "NEW",
-          on_off: "on/off",
-        },
-        {
-          Name: "gggg",
-          data: "2021 Dec 02 – 2022 Jan 02 ",
-          time: "00:00 – 23:59",
-          type_of_test: "files",
-          net_type: "All Net Types	",
-          intensity: "30",
-          Status: "NEW",
-          on_off: "on/off",
-        },
-        {
-          Name: "voker",
-          data: "2021 Dec 02 – 2022 Jan 02 ",
-          time: "00:00 – 23:59",
-          type_of_test: "files",
-          net_type: "All Net Types	",
-          intensity: "30",
-          Status: "NEW",
-          on_off: "on/off",
-        },
-        {
-          Name: "tessssssssssss",
-          data: "2021 Dec 02 – 2022 Jan 02 ",
-          time: "00:00 – 23:59",
-          type_of_test: "files",
-          net_type: "All Net Types	",
-          intensity: "30",
-          Status: "NEW",
-          on_off: "on/off",
-        },
-        {
-          Name: "aadsasasdadsads",
-          data: "2021 Dec 02 – 2022 Jan 02 ",
-          time: "00:00 – 23:59",
-          type_of_test: "files",
-          net_type: "All Net Types	",
-          intensity: "30",
-          Status: "NEW",
-          on_off: "on/off",
-        },
-        {
-          Name: "tetetst",
-          data: "2021 Dec 02 – 2022 Jan 02 ",
-          time: "00:00 – 23:59",
-          type_of_test: "files",
-          net_type: "All Net Types	",
-          intensity: "30",
-          Status: "NEW",
-          on_off: "on/off",
-        },
-        {
-          Name: "test",
-          data: "2021 Dec 02 – 2022 Jan 02 ",
-          time: "00:00 – 23:59",
-          type_of_test: "",
-          net_type: "All Net Types	",
-          intensity: "5",
-          Status: "NEW",
-          on_off: "on/off",
-        },
-        {
-          Name: "deadinside",
-          data: "2021 Dec 02 – 2022 Jan 02 ",
-          time: "00:00 – 23:59",
-          type_of_test: "",
-          net_type: "All Net Types	",
-          intensity: "30",
-          Status: "NEW",
-          on_off: "on/off",
-        },
-        {
-          Name: "Mtest1",
-          data: "2021 Dec 02 – 2022 Jan 02 ",
-          time: "00:00 – 23:59",
-          type_of_test: "site",
-          net_type: "All Net Types	",
-          intensity: "30",
-          Status: "NEW",
-          on_off: "on/off",
-        },
-      ],
+      
     };
   },
   methods: {
-    ...mapMutations(["showNewTask"]),
+    ...mapMutations(["showNewTask","addNewTask"]),
     scrollToNewTask() {
       console.log(
         "$store.state.taskModule.isNewTask",
@@ -301,6 +171,11 @@ export default {
         "🚀 ~ file: OldTasks.vue ~ line 287 ~ scrollToNewTask ~ this.$refs.newTask",
         this.$refs.newTask
       );
+    },
+    checkItems() {
+      this.addNewTask();
+      // this.$store.state.mapsModule.items;
+      console.log("🚀 ~ file: OldTasks.vue ~ line 178 ~ checkItems ~  this.$store.state.mapsModule.items",  this.$store.state.mapsModule.items)
     },
   },
 };

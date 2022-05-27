@@ -92,12 +92,12 @@ import { mapActions, mapMutations } from "vuex";
 export default {
   components: { VueGoogleAutocomplete },
   name: "GoogleMaps",
-  props: {
-    isSend: {Boolean,
+  // props: {
+  //   isSend: {Boolean,
     
-    deep: true,
-    },
-  },
+  //   deep: true,
+  //   },
+  // },
   data() {
     return {
       // items: [],
@@ -145,19 +145,19 @@ export default {
   //     console.error(e);
   //   }
   // },
-  watch: {
-isSend(newVal, oldVal) {
-console.log("🚀 ~ file: GoogleMaps.vue ~ line 147 ~ oldVal", oldVal)
-console.log("🚀 ~ file: GoogleMaps.vue ~ line 147 ~ newVal", newVal)
-console.log("🚀 ~ file: GoogleMaps.vue ~ line 147 ~ isSend ~ isSend", this.isSend)
-  if(isSend == true){
-this.polygons.forEach((poly)=>{
-  poly.setMap(null);
-})
-}
-  console.log("🚀 ~ file: GoogleMaps.vue ~ line 152 ~ this.polygons.forEach ~ this.polygons", this.polygons)
-}
-  },
+//   watch: {
+// isSend(newVal, oldVal) {
+// console.log("🚀 ~ file: GoogleMaps.vue ~ line 147 ~ oldVal", oldVal)
+// console.log("🚀 ~ file: GoogleMaps.vue ~ line 147 ~ newVal", newVal)
+// console.log("🚀 ~ file: GoogleMaps.vue ~ line 147 ~ isSend ~ isSend", this.isSend)
+//   if(isSend == true){
+// this.polygons.forEach((poly)=>{
+//   poly.setMap(null);
+// })
+// }
+//   console.log("🚀 ~ file: GoogleMaps.vue ~ line 152 ~ this.polygons.forEach ~ this.polygons", this.polygons)
+// }
+//   },
   methods: {
 // isSendFunc() {
 //   if(this.isSend){
@@ -189,7 +189,7 @@ this.polygons.forEach((poly)=>{
           editable: false,
         });
        console.log("🚀 ~ file: GoogleMaps.vue ~ line 168 ~ newPolygons.forEach ~ newPoly", newPoly)
-        this.polygons.push(newPoly);
+        this.$store.state.mapsModule.polygons.push(newPoly);
         console.log(
           "🚀 ~ file: GoogleMaps.vue ~ line 169 ~ newPolygons.forEach ~ this.polygons",
           this.polygons
@@ -234,22 +234,24 @@ this.polygons.forEach((poly)=>{
       this.checkArray();
     },
     unHoverPolygon() {
-      console.log("this.polygons from UN-HOVER", this.polygons);
-      this.polygons.forEach((polygon) => {
+     
+      this.$store.state.mapsModule.polygons.forEach((polygon) => {
         polygon.setOptions({
           fillOpacity: 0.35,
         });
       });
     },
     hoverPolygon(index) {
-      console.log("this.polygons from HOVER", this.polygons);
-      let findedPolygon = this.polygons[index];
+     
+      let findedPolygon = this.$store.state.mapsModule.polygons[index];
+      console.log("🚀 ~ file: GoogleMaps.vue ~ line 247 ~ hoverPolygon ~ this.$store.state.mapsModule.polygons", this.$store.state.mapsModule.polygons)
+      console.log("🚀 ~ file: GoogleMaps.vue ~ line 247 ~ hoverPolygon ~ findedPolygon", findedPolygon)
       findedPolygon.setOptions({
         fillOpacity: 0.7,
       });
     },
     delAreaOfIndex(index) {
-      let removePoly = this.polygons.splice(index, 1);
+      let removePoly = this.$store.state.mapsModule.polygons.splice(index, 1);
       removePoly[0].setMap(null);
       this.$store.state.mapsModule.items.splice(index, 1);
       // this.lastItemInput();
@@ -308,7 +310,7 @@ this.polygons.forEach((poly)=>{
           );
           this.enable();
           console.log("this.$refs.gmap.$mapObject", this.$refs.gmap.$mapObject);
-          this.polygons.push(poly);
+          this.$store.state.mapsModule.polygons.push(poly);
           console.log(
             "🚀 ~ file: GoogleMaps.vue ~ line 234 ~ drawFreeHand ~ this.polygons",
             this.polygons

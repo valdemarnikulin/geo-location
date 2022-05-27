@@ -21,7 +21,7 @@
               <b-form-input
                 id="nameId"
                 size="sm"
-                v-model="name"
+                v-model="nameTask"
                 placeholder="Enter name"
               ></b-form-input>
             </div>
@@ -205,7 +205,7 @@ import GoogleMaps from "./GoogleMaps.vue";
 
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
-import { mapActions } from "vuex";
+import { mapActions, mapState } from "vuex";
 
 export default {
   components: { GoogleMaps, Treeselect },
@@ -219,13 +219,13 @@ export default {
       selectedFiles: null,
       selectedUrls: null,
       showMap: false,
-      name: "",
+      nameT: "",
       datepicker: null,
       timepicker: null,
       // isReady: true,
       // items: [],
       // polygons: [],
-      isSend: false,
+      // isSend: false,
       optionsCountry: [
         {
           id: "f",
@@ -267,13 +267,17 @@ export default {
 
   methods: {
     ...mapActions(["sendData"]),
+    
     dateNow() {
       this.datepicker = Date.now();
     },
 sendDatas() {
+  
+  console.log("🚀 ~ file: NewTask.vue ~ line 275 ~ sendDatas ~ this.$store.state", this.$store.state.mapsModule)
+  // this.$store.state.mapsModule.items.push(this.nameTask);
   this.sendData();
-  this.isSend = true;
-  console.log("🚀 ~ file: NewTask.vue ~ line 276 ~ sendDatas ~ this.isSend", this.isSend)
+  // this.isSend = true;
+  // console.log("🚀 ~ file: NewTask.vue ~ line 276 ~ sendDatas ~ this.isSend", this.isSend)
 },
     // changeState(data) {
     //   this.isReady = data.isReady;
@@ -282,6 +286,10 @@ sendDatas() {
     // },
   },
   computed: {
+    ...mapState(["nameTask"]),
+//     changeNameTask() {
+//      return this.nameT = this.nameTask;
+//  }
     // checkName() {
     //   if (this.name.length === 0) {
     //     return true;
