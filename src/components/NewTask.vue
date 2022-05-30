@@ -21,7 +21,7 @@
               <b-form-input
                 id="nameId"
                 size="sm"
-                v-model="nameTask"
+                v-model="message"
                 placeholder="Enter name"
               ></b-form-input>
             </div>
@@ -194,6 +194,10 @@
           Ready</b-button
         >
         <b-button variant="danger">Close</b-button>
+        <div>
+
+          {{this.$store.state.mapsModule.nameTask}}
+        </div>
       </b-card>
       </div>
      
@@ -205,13 +209,17 @@ import GoogleMaps from "./GoogleMaps.vue";
 
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
-import { mapActions, mapState } from "vuex";
+import { mapActions,
+//  mapState, 
+ mapGetters,
+ mapMutations,
+  } from "vuex";
 
 export default {
   components: { GoogleMaps, Treeselect },
   data() {
     return {
-      numberTasks: 5,
+      numberTasks: 1000,
       selectedDay: ["a"],
       selectedCome: ["d"],
       selectedDayNight: ["e"],
@@ -219,7 +227,7 @@ export default {
       selectedFiles: null,
       selectedUrls: null,
       showMap: false,
-      nameT: "",
+      // nameT: "",
       datepicker: null,
       timepicker: null,
       // isReady: true,
@@ -267,12 +275,16 @@ export default {
 
   methods: {
     ...mapActions(["sendData"]),
+    ...mapMutations(['setForm','addNewTask']),
+    ...mapGetters(['getDate', 'getTime']),
     
     dateNow() {
       this.datepicker = Date.now();
     },
 sendDatas() {
-  
+  this.getDate();
+  this.getTime();
+  this.addNewTask();
   console.log("🚀 ~ file: NewTask.vue ~ line 275 ~ sendDatas ~ this.$store.state", this.$store.state.mapsModule)
   // this.$store.state.mapsModule.items.push(this.nameTask);
   this.sendData();
@@ -286,9 +298,20 @@ sendDatas() {
     // },
   },
   computed: {
-    ...mapState(["nameTask"]),
-//     changeNameTask() {
-//      return this.nameT = this.nameTask;
+    ...mapGetters(['createNameTask']),
+
+    message: {
+    get () {
+      return this.createNameTask
+    },
+    set (value) {
+      this.setForm(value)
+    }
+  },
+    // ...mapState(['nameTask']),
+//     nameTask() {
+//       console.log("🚀 ~ file: NewTask.vue ~ line 292 ~ changeNameTask ~ this.$store.state.nameTask", this.$store.state)
+//      return this.$store.state.mapsModule.nameTask;
 //  }
     // checkName() {
     //   if (this.name.length === 0) {

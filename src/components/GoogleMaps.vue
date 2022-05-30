@@ -100,13 +100,6 @@ export default {
   // },
   data() {
     return {
-      // items: [],
-      // polygoneCoords: [
-      //   { lat: 43.22608519272654, lng: 76.94577714895546 },
-      //   { lat: 43.22076896557207, lng: 76.94959661455647 },
-      //   { lat: 43.221175516959775, lng: 76.96182748754842 },
-      //   { lat: 43.226960762144486, lng: 76.96092626532796 },
-      // ],
       item: null,
       paths: [],
       polygons: [],
@@ -244,8 +237,6 @@ export default {
     hoverPolygon(index) {
      
       let findedPolygon = this.$store.state.mapsModule.polygons[index];
-      console.log("🚀 ~ file: GoogleMaps.vue ~ line 247 ~ hoverPolygon ~ this.$store.state.mapsModule.polygons", this.$store.state.mapsModule.polygons)
-      console.log("🚀 ~ file: GoogleMaps.vue ~ line 247 ~ hoverPolygon ~ findedPolygon", findedPolygon)
       findedPolygon.setOptions({
         fillOpacity: 0.7,
       });

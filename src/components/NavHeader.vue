@@ -12,15 +12,23 @@
             style="width: 20px; height: 20px"
             icon="fa-solid fa-bars"
         /></b-button>
-        <div class="navbar__icon">
+        <div class="navbar__icon" @click="changeState">
+          <div v-if="isSearch">
           <b-icon icon="search" font-scale="2"></b-icon>
+          </div>
+          <div v-else>
+            <b-input v-model="searchText"></b-input>
+          </div>
         </div>
       </div>
       <div class="navbar__right">
         <div class="wrap pr-5">
           <div class="wrap__date">
             <div><b>Date</b></div>
-            <div class="opacity-7">2022 May 08 - 21:20:07 UTC+6</div>
+            <div class="opacity-7">
+              <!-- 2022 May 08 - 21:20:07 UTC+6 -->
+              {{currentDateTime()}}
+              </div>
           </div>
           <div class="wrap__icons">
             <div class="wrap__usa mr-2">
@@ -58,7 +66,31 @@
 </template>
 
 <script>
-export default {};
+export default {
+  data(){
+    return{
+      time:'',
+searchText:'',
+isSearch: true,
+    };
+  },
+  methods:{
+    changeState(){
+this.isSearch = !this.isSearch;
+    },
+    currentDateTime() {
+      setTimeout(() => {
+          this.time = new Date()
+        }, 1000)
+     
+      let date = this.time.getFullYear()+'-'+(this.time.getMonth()+1)+'-'+this.time.getDate();
+      let time = this.time.getHours() + ":" + this.time.getMinutes() + ":" + this.time.getSeconds();
+      let dateTime = date +' '+ time;
+
+      return dateTime;
+    }
+  }
+};
 </script>
 
 <style>

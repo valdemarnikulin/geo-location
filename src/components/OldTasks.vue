@@ -135,7 +135,7 @@
 </template>
 
 <script>
-import { mapMutations } from "vuex";
+import { mapMutations, mapActions } from "vuex";
 
 export default {
   data() {
@@ -155,6 +155,52 @@ export default {
   },
   methods: {
     ...mapMutations(["showNewTask","addNewTask"]),
+    ...mapActions(["getData"]),
+    // async getDatas() {
+    //   await this.getData();
+    //   let newPolygons = this.$store.state.mapsModule.items;
+    //   console.log(
+    //     "🚀 ~ file: GoogleMaps.vue ~ line 151 ~ getDatas ~ newPolygons",
+    //     newPolygons
+    //   );
+    //   console.log("this.polygons", this.polygons);
+    //   newPolygons.forEach((poly) => {
+    //     console.log("poly", poly);
+    //    let newPoly = new google.maps.Polygon({
+    //       map: this.$refs.gmap.$mapObject,
+    //       path: poly.coords,
+    //       strokeColor: "#0e0f3e",
+    //       strokeOpacity: 0.8,
+    //       strokeWeight: 2,
+    //       fillColor: "#0e0f3e",
+    //       fillOpacity: 0.35,
+    //       editable: false,
+    //     });
+    //    console.log("🚀 ~ file: GoogleMaps.vue ~ line 168 ~ newPolygons.forEach ~ newPoly", newPoly)
+    //     this.$store.state.mapsModule.polygons.push(newPoly);
+    //     console.log(
+    //       "🚀 ~ file: GoogleMaps.vue ~ line 169 ~ newPolygons.forEach ~ this.polygons",
+    //       this.polygons
+    //     );
+    //   });
+    //   console.log("newPolygons after draw", newPolygons);
+    //   // this.polygons = [...newPolygons];
+    //   // console.log(
+    //   //   "🚀 ~ file: GoogleMaps.vue ~ line 171 ~ getDatas ~ this.polygons",
+    //   //   this.polygons
+    //   // );
+    //   // [this.polygons, ...newPolygons];
+    //   // console.log(
+    //   //   "🚀 ~ file: GoogleMaps.vue ~ line 171 ~ getDatas ~ this.polygons",
+    //   //   this.polygons
+    //   // );
+    //   // let arr = this.polygons.concat(newPolygons);
+    //   // console.log("🚀 ~ file: GoogleMaps.vue ~ line 176 ~ getDatas ~ arr", arr);
+    //   // console.log(
+    //   //   "🚀 ~ file: GoogleMaps.vue ~ line 170 ~ getDatas ~ this.polygons",
+    //   //   this.polygons
+    //   // );
+    // },
     scrollToNewTask() {
       console.log(
         "$store.state.taskModule.isNewTask",
