@@ -9,10 +9,14 @@ export default {
         isReady: true,
         items: [],
     polygons:[],
+    showMap: false
         // map: this.$refs.gmap.$mapObject,
     },
     getters: {//computed
-getButtonVisible: (state) => state.isReady,
+getButtonVisible(state){
+    console.log("🚀 ~ file: mapsModule.js ~ line 18 ~ getButtonVisible ~ state.showMap", state.showMap)
+ return   state.showMap
+},
 createNameTask(state) {
     console.log("🚀 ~ file: mapsModule.js ~ line 18 ~ createNameTask ~ tate.nameTask", state.nameTask)
     return state.message
@@ -21,6 +25,9 @@ createNameTask(state) {
         //filter
     },
     mutations: {//methods
+        updateShowMap(state, message) {
+            state.showMap = message
+        },
         activeButton(state) {
             state.isReady = false;
         },
@@ -61,22 +68,26 @@ createNameTask(state) {
           },
 
 
-          async getData(state, i) {
+          async getData(state,payload) {
+              console.log("🚀 ~ file: mapsModule.js ~ line 65 ~ getData ~ payload", payload)
               try {
                   
-                  console.log("🚀 ~ file: mapsModule.js ~ line 68 ~ getData ~ baseURL", baseURL.id)
+                  console.log("🚀 ~ file: mapsModule.js ~ line 68 ~ getData ~ baseURL", baseURL)
                 const res =   await axios.get(baseURL);
                 console.log("🚀 ~ file: mapsModule.js ~ line 42 ~ getData ~ res", res)
-                
-              let currentItem = res.data.splice(i,1);
-              console.log("🚀 ~ file: mapsModule.js ~ line 72 ~ getData ~ currentItem", currentItem)
-                let {data:[[...item]]} = res
-                console.log("🚀 ~ file: mapsModule.js ~ line 46 ~ getData ~ item", item)
-        item.forEach(el => {
+               let {data} = res;
+               console.log("🚀 ~ file: mapsModule.js ~ line 72 ~ getData ~ data", data)
+            let findObj = data.find(el => el.id === payload)
+            console.log("🚀 ~ file: mapsModule.js ~ line 74 ~ getData ~ findObj", findObj)
+               //   let currentItem = res.data.splice(i,1);
+            //   console.log("🚀 ~ file: mapsModule.js ~ line 72 ~ getData ~ currentItem", currentItem)
+                // let {data:[{...item}]} = res
+                // console.log("🚀 ~ file: mapsModule.js ~ line 46 ~ getData ~ item", item)
+                findObj.Areas.forEach(el => {
             state.state.items.push(el)
         });
                 // state.state.items.push(item)
-                console.log("🚀 ~ file: mapsModule.js ~ line 48 ~ getData ~  state.state.items",  state.state.items)
+                // console.log("🚀 ~ file: mapsModule.js ~ line 48 ~ getData ~  state.state.items",  state.state.items)
 //                 state.state.items = res.data;
 //                 console.log("🚀 ~ file: mapsModule.js ~ line 43 ~ getData ~ state.state.items", state.state.items)
 // let [[deepfirst]] = state.state.items || [];

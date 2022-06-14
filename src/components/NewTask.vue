@@ -188,12 +188,12 @@
         <b-button
           class="mr-3"
           variant="primary"
-          :disabled="$store.getters.getButtonVisible"
+          :disabled="false"
           @click="sendDatas"
           ><font-awesome-icon class="mr-1" icon="fa-solid fa-pen-to-square" />
           Ready</b-button
         >
-        <b-button variant="danger">Close</b-button>
+        <b-button variant="danger" @click="closeNewTask">Close</b-button>
         <div>
 
           {{this.$store.state.mapsModule.nameTask}}
@@ -213,12 +213,14 @@ import { mapActions,
 //  mapState, 
  mapGetters,
  mapMutations,
+//  mapState,
   } from "vuex";
 
 export default {
   components: { GoogleMaps, Treeselect },
   data() {
     return {
+      showNewTask: true,
       numberTasks: 1000,
       selectedDay: ["a"],
       selectedCome: ["d"],
@@ -226,7 +228,7 @@ export default {
       selectedCountry: ["f"],
       selectedFiles: null,
       selectedUrls: null,
-      showMap: false,
+      // showMap: false,
       // nameT: "",
       datepicker: null,
       timepicker: null,
@@ -275,8 +277,11 @@ export default {
 
   methods: {
     ...mapActions(["sendData"]),
-    ...mapMutations(['setForm','addNewTask']),
-    ...mapGetters(['getDate', 'getTime']),
+    ...mapMutations(['setForm','addNewTask',"closeNewTask"]),
+    ...mapGetters(['getDate', 'getTime', "getButtonVisible"]),
+    updateShowMap(e) {
+this.$store.commit('updateShowMap', e.target.value)
+    },
     
     dateNow() {
       this.datepicker = Date.now();
@@ -299,13 +304,17 @@ sendDatas() {
   },
   computed: {
     ...mapGetters(['createNameTask']),
+    getButtonVisibles(){
+      return this.$store.state.mapsModule.showMap
+      },
+   
 
-    message: {
+    showMap: {
     get () {
-      return this.createNameTask
+      return this.$store.state.mapsModule.showMap
     },
     set (value) {
-      this.setForm(value)
+      this.$store.commit('updateShowMap', value)
     }
   },
     // ...mapState(['nameTask']),

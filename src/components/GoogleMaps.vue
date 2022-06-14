@@ -128,6 +128,12 @@ export default {
   mounted() {
     this.$refs.address.focus();
     this.geolocate();
+    this.getDatas();
+  },
+  watch: {
+    items() {
+console.log("change items")
+    }
   },
   //  async created() {
   //   try {
@@ -162,6 +168,9 @@ export default {
     ...mapMutations(["activeButton", "unActiveButton"]),
     ...mapActions(["getData"]),
     async getDatas() {
+      if(!this.$store.state.mapsModule.items){
+        return
+      }
       await this.getData();
       let newPolygons = this.$store.state.mapsModule.items;
       console.log(
@@ -437,6 +446,7 @@ export default {
       //   polygons: this.polygons,
       // });
     },
+    
     // lastItemInput() {
     //   // this.items.length === 0 ? (this.isReady = true) : (this.isReady = false);
     //   // console.log(

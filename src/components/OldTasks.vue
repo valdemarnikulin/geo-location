@@ -82,7 +82,9 @@
           </p>
         </div>
       </div>
-      <b-button @click="checkItems">Check Items</b-button>
+      <b-button @click="getAllData">getAllData</b-button>
+
+
       <b-table responsive="sm" :items="this.$store.state.oldTask.oldTasks" :fields="fields">
         <template #cell(Status)="{ item }">
           <span
@@ -104,15 +106,11 @@
           </div>
         </template>
         <template #cell(Actions)="{ item }">
-          <b-button class="border-none" size="sm" variant="outline-primary"
-            ><font-awesome-icon icon="fa-solid fa-pen-to-square" />{{
-              item.new
-            }}</b-button
+          <b-button class="border-none" size="sm" variant="outline-primary" @click="editItem(item.id)"
+            ><font-awesome-icon icon="fa-solid fa-pen-to-square" /></b-button
           >
-          <b-button class="border-none icon-red" size="sm" variant="danger"
-            ><font-awesome-icon icon="fa-solid fa-trash-can" />{{
-              item.new
-            }}</b-button
+          <b-button class="border-none icon-red" size="sm" variant="danger" @click="deleteItem(item.id)"
+            ><font-awesome-icon icon="fa-solid fa-trash-can" /></b-button
           >
         </template>
         <!-- <template #cell(Actions)="btn">
@@ -123,12 +121,12 @@
             variant="outline-primary"
             ><font-awesome-icon class="mr-1" icon="fa-solid fa-pen-to-square" />b-button>
         </template> -->
-        <template #cell(on_off)="on_off">
+        <!-- <template #cell(on_off)="on_off">
           <b-form-checkbox size="lg" switch class="switch__body"
             >{{ on_off.on_off }}
             <span class="switch__label">asdasdas</span></b-form-checkbox
           >
-        </template>
+        </template> -->
       </b-table>
     </b-card>
   </div>
@@ -145,8 +143,8 @@ export default {
         "type_of_test",
         "net_type",
         "intensity",
-        "Status",
-        "on_off",
+        // "Status",
+        // "on_off",
         "Actions",
       ],
       isswitch: null,
@@ -154,8 +152,16 @@ export default {
     };
   },
   methods: {
-    ...mapMutations(["showNewTask","addNewTask"]),
-    ...mapActions(["getData"]),
+    ...mapMutations(["showNewTask","addNewTask","deleteItem"]),
+    ...mapActions(["getData", "getAllData"]),
+   async editItem(id) {
+      console.log("payload", id)
+      await this.getData(id)
+      this.showNewTask();
+    },
+    // deleteItemOfTask() {
+
+    // },
     // async getDatas() {
     //   await this.getData();
     //   let newPolygons = this.$store.state.mapsModule.items;

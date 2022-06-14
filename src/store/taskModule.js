@@ -7,5 +7,8 @@ export default {
 showNewTask(state) {
 state.isNewTask = true;
 },
+closeNewTask(state) {
+    state.isNewTask = false;
+},
     },
 }
