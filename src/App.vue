@@ -2,24 +2,21 @@
   <div id="app" class="app-vue">
     <nav-header></nav-header>
     <side-bar></side-bar>
-
-    <old-tasks></old-tasks>
-    <new-task></new-task>
+<index-task />
+    
   </div>
 </template>
 
 <script>
 import NavHeader from "./components/NavHeader.vue";
 
-import NewTask from "./components/NewTask.vue";
-import OldTasks from "./components/OldTasks.vue";
+import indexTask from "./components/Tasks/indexTask.vue"
 import SideBar from "./components/SideBar.vue";
 
 export default {
   name: "App",
   components: {
-    NewTask,
-    OldTasks,
+    indexTask,
     NavHeader,
     SideBar,
   },

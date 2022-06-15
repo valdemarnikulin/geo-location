@@ -85,7 +85,7 @@
   src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"
 ></script>
 <script>
-import { getGoogleMapsAPI } from "gmap-vue";
+// import { getGoogleMapsAPI } from "gmap-vue";
 import VueGoogleAutocomplete from "vue-google-autocomplete";
 import { mapActions, mapMutations } from "vuex";
 
@@ -102,7 +102,7 @@ export default {
     return {
       item: null,
       paths: [],
-      polygons: [],
+      // polygons: [],
       connection: null,
       isResizeDiv: false,
       currentPlace: null,
@@ -166,18 +166,19 @@ console.log("change items")
 //   }
 // },
     ...mapMutations(["activeButton", "unActiveButton"]),
-    ...mapActions(["getData"]),
-    async getDatas() {
-      if(!this.$store.state.mapsModule.items){
-        return
-      }
+    ...mapActions(["getData","getDataOnce"]),
+   async getDatas() {
+      // if(!this.$store.state.mapsModule.items){
+      //   return
+      // }
       await this.getData();
+      // await this.getDataOnce();
       let newPolygons = this.$store.state.mapsModule.items;
       console.log(
         "🚀 ~ file: GoogleMaps.vue ~ line 151 ~ getDatas ~ newPolygons",
         newPolygons
       );
-      console.log("this.polygons", this.polygons);
+
       newPolygons.forEach((poly) => {
         console.log("poly", poly);
        let newPoly = new google.maps.Polygon({
@@ -192,12 +193,17 @@ console.log("change items")
         });
        console.log("🚀 ~ file: GoogleMaps.vue ~ line 168 ~ newPolygons.forEach ~ newPoly", newPoly)
         this.$store.state.mapsModule.polygons.push(newPoly);
-        console.log(
-          "🚀 ~ file: GoogleMaps.vue ~ line 169 ~ newPolygons.forEach ~ this.polygons",
-          this.polygons
-        );
+        console.log("🚀 ~ file: GoogleMaps.vue ~ line 195 ~ newPolygons.forEach ~ this.$store.state.mapsModule.polygons", this.$store.state.mapsModule.polygons)
+        
       });
-      console.log("newPolygons after draw", newPolygons);
+      let findPoly = newPolygons.find(el=>el)
+      console.log("🚀 ~ file: GoogleMaps.vue ~ line 200 ~ getDatas ~ findPoly", findPoly.coords[0].lat)
+      this.center = {
+        lat:findPoly.coords[0].lat,
+        lng:findPoly.coords[0].lng
+      }
+      console.log("🚀 ~ file: GoogleMaps.vue ~ line 202 ~ getDatas ~ this.center", this.center)
+
       // this.polygons = [...newPolygons];
       // console.log(
       //   "🚀 ~ file: GoogleMaps.vue ~ line 171 ~ getDatas ~ this.polygons",
@@ -430,7 +436,7 @@ console.log("change items")
   },
 
   computed: {
-    google: getGoogleMapsAPI,
+    // google: getGoogleMapsAPI,
     checkArray() {
       this.$store.state.mapsModule.items.find((item) => {
         if (item.isDisabledForm === false) {

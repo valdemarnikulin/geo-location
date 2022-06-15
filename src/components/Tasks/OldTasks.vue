@@ -52,17 +52,12 @@
               <div>Data testing</div>
             </div>
           </div>
+<div>
+<slot name="btnAdd"></slot>
+</div>
 
-          <b-button
-            style="padding: 0.375rem 1.5rem"
-            class="m-1 shadow"
-            size="sm"
-            variant="primary"
-            @click="scrollToNewTask"
-            :disabled="this.$store.state.taskModule.isNewTask"
-            ><b-icon icon="plus" class="opacity-7 pr-2" scale="3" />
-            New
-          </b-button>
+<!-- <slot name="another"></slot> -->
+           
         </div>
         <div class="opacity-7 pt-4" style="font-size: 0.94rem">
           <p>
@@ -106,10 +101,16 @@
           </div>
         </template>
         <template #cell(Actions)="{ item }">
-          <b-button class="border-none" size="sm" variant="outline-primary" @click="editItem(item.id)"
-            ><font-awesome-icon icon="fa-solid fa-pen-to-square" /></b-button
-          >
-          <b-button class="border-none icon-red" size="sm" variant="danger" @click="deleteItem(item.id)"
+         <b-button
+         v-scroll-to="'#newTask'" 
+         class="border-none" 
+         size="sm" 
+         variant="outline-primary" 
+         @click="editItem(item.id)"
+            ><font-awesome-icon icon="fa-solid fa-pen-to-square" />
+            </b-button>
+          
+          <b-button class="border-none icon-red" size="sm" variant="danger" @click="deleteItem(item)"
             ><font-awesome-icon icon="fa-solid fa-trash-can" /></b-button
           >
         </template>
@@ -152,78 +153,25 @@ export default {
     };
   },
   methods: {
-    ...mapMutations(["showNewTask","addNewTask","deleteItem"]),
+    ...mapMutations(["showNewTask","addNewTask","deleteItem", "changeIsShowMap"]),
     ...mapActions(["getData", "getAllData"]),
-   async editItem(id) {
-      console.log("payload", id)
-      await this.getData(id)
-      this.showNewTask();
-    },
-    // deleteItemOfTask() {
-
-    // },
-    // async getDatas() {
-    //   await this.getData();
-    //   let newPolygons = this.$store.state.mapsModule.items;
-    //   console.log(
-    //     "🚀 ~ file: GoogleMaps.vue ~ line 151 ~ getDatas ~ newPolygons",
-    //     newPolygons
-    //   );
-    //   console.log("this.polygons", this.polygons);
-    //   newPolygons.forEach((poly) => {
-    //     console.log("poly", poly);
-    //    let newPoly = new google.maps.Polygon({
-    //       map: this.$refs.gmap.$mapObject,
-    //       path: poly.coords,
-    //       strokeColor: "#0e0f3e",
-    //       strokeOpacity: 0.8,
-    //       strokeWeight: 2,
-    //       fillColor: "#0e0f3e",
-    //       fillOpacity: 0.35,
-    //       editable: false,
-    //     });
-    //    console.log("🚀 ~ file: GoogleMaps.vue ~ line 168 ~ newPolygons.forEach ~ newPoly", newPoly)
-    //     this.$store.state.mapsModule.polygons.push(newPoly);
-    //     console.log(
-    //       "🚀 ~ file: GoogleMaps.vue ~ line 169 ~ newPolygons.forEach ~ this.polygons",
-    //       this.polygons
-    //     );
-    //   });
-    //   console.log("newPolygons after draw", newPolygons);
-    //   // this.polygons = [...newPolygons];
-    //   // console.log(
-    //   //   "🚀 ~ file: GoogleMaps.vue ~ line 171 ~ getDatas ~ this.polygons",
-    //   //   this.polygons
-    //   // );
-    //   // [this.polygons, ...newPolygons];
-    //   // console.log(
-    //   //   "🚀 ~ file: GoogleMaps.vue ~ line 171 ~ getDatas ~ this.polygons",
-    //   //   this.polygons
-    //   // );
-    //   // let arr = this.polygons.concat(newPolygons);
-    //   // console.log("🚀 ~ file: GoogleMaps.vue ~ line 176 ~ getDatas ~ arr", arr);
-    //   // console.log(
-    //   //   "🚀 ~ file: GoogleMaps.vue ~ line 170 ~ getDatas ~ this.polygons",
-    //   //   this.polygons
-    //   // );
-    // },
-    scrollToNewTask() {
+   editItem(id) {
+      console.log("🚀 ~ file: OldTasks.vue ~ line 159 ~ editItem ~ id", id)
       console.log(
         "$store.state.taskModule.isNewTask",
         this.$store.state.taskModule.isNewTask
       );
-      this.showNewTask();
-      console.log(
-        "🚀 ~ file: OldTasks.vue ~ line 291 ~ scrollToNewTask ~ this.showNewTask();",
-        this.showNewTask
-      );
-      this.$refs.newTask.scrollIntoView();
-
-      console.log(
-        "🚀 ~ file: OldTasks.vue ~ line 287 ~ scrollToNewTask ~ this.$refs.newTask",
-        this.$refs.newTask
+      console.log("payload", id)
+      
+        this.showNewTask();
+       this.getData(id)
+this.changeIsShowMap();
+console.log(
+        "$store.state.taskModule.isNewTask 22222",
+        this.$store.state.taskModule.isNewTask
       );
     },
+    
     checkItems() {
       this.addNewTask();
       // this.$store.state.mapsModule.items;
@@ -234,5 +182,5 @@ export default {
 </script>
 
 <style>
-@import "../assets/oldTask.scss";
+@import "../../assets/oldTask.scss";
 </style>

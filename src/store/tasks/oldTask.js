@@ -1,4 +1,4 @@
-import mapsModule from "./mapsModule"
+import mapsModule from "../mapsModule"
 import axios from "axios";
 const baseURL = "http://localhost:3000/media";
 
@@ -57,18 +57,13 @@ export default {
     },
     },
     mutations: {
-     deleteItem(state, payload) {
-       let item = payload - 1;
-       console.log("🚀 ~ file: oldTask.js ~ line 62 ~ deleteItem ~ item", item)
-       console.log("🚀 ~ file: oldTask.js ~ line 61 ~ deleteItem ~ payload", payload)
-       let findItem = state.oldTasks.find(el => el.id == payload)
-       if(state.oldTasks.length == 1){
-payload = 0,
-state.oldTasks.splice(payload,1);
-       }
-       console.log("🚀 ~ file: oldTask.js ~ line 62 ~ deleteItem ~ findItem", findItem)
-       state.oldTasks.splice(item,1);
-       console.log("🚀 ~ file: oldTask.js ~ line 51 ~ deleteItem ~ state.oldTasks", state.oldTasks)
+     deleteItem(state, payload) {      
+       let findItem = state.oldTasks.findIndex(el => el.id == payload.id)     
+//        if(state.oldTasks.length == 1){
+// payload = 0,
+// state.oldTasks.splice(findItem,1);
+//        }
+       state.oldTasks.splice(findItem,1);
      },
         addNewTask(state, store) {
           console.log("🚀 ~ file: oldTask.js ~ line 68 ~ addNewTask ~ store", store)

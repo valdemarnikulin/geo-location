@@ -23,6 +23,20 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import axios from 'axios';
 import VueAxios from 'vue-axios';
 import store from './store';
+import VueScrollTo from 'vue-scrollto';
+Vue.use(VueScrollTo, {
+  container: "body",
+  duration: 500,
+  easing: "ease",
+  offset: 0,
+  force: true,
+  cancelable: true,
+  onStart: false,
+  onDone: false,
+  onCancel: false,
+  x: false,
+  y: true
+})
 Vue.use(VueAxios, axios);
 library.add(faXmark, faPencil, faPlus, faPenToSquare, faTrashCan, faBars, faAngleRight, faTowerBroadcast, faGlobe, faCheck, faComments );
 Vue.component("font-awesome-icon", FontAwesomeIcon);

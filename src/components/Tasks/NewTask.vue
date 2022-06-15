@@ -205,7 +205,7 @@
 </template>
 
 <script>
-import GoogleMaps from "./GoogleMaps.vue";
+import GoogleMaps from "../GoogleMaps.vue";
 
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
@@ -279,9 +279,10 @@ export default {
     ...mapActions(["sendData"]),
     ...mapMutations(['setForm','addNewTask',"closeNewTask"]),
     ...mapGetters(['getDate', 'getTime', "getButtonVisible"]),
-    updateShowMap(e) {
-this.$store.commit('updateShowMap', e.target.value)
-    },
+//     updateShowMap(e) {
+// this.$store.commit('updateShowMap', e.target.value)
+// console.log("🚀 ~ file: NewTask.vue ~ line 284 ~ updateShowMap ~ e.target.value", e)
+//     },
     
     dateNow() {
       this.datepicker = Date.now();
@@ -309,6 +310,14 @@ sendDatas() {
       },
    
 
+    message: {
+    get () {
+      return this.$store.state.mapsModule.message
+    },
+    set (value) {
+      this.$store.commit('updateMessage', value)
+    }
+  },
     showMap: {
     get () {
       return this.$store.state.mapsModule.showMap
@@ -335,5 +344,6 @@ sendDatas() {
 </script>
 
 <style>
-@import "../assets/newTask.scss";
+@import "../../assets/newTask.scss";
+/* @import "../assets/newTask.scss"; */
 </style>
