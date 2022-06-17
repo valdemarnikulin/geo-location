@@ -16,7 +16,8 @@ import { faXmark,
   faCheck,
   faTowerBroadcast,
   faGlobe,
-  faComments
+  faComments,
+  faMapPin
 } from "@fortawesome/free-solid-svg-icons";
 
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
@@ -38,13 +39,14 @@ Vue.use(VueScrollTo, {
   y: true
 })
 Vue.use(VueAxios, axios);
-library.add(faXmark, faPencil, faPlus, faPenToSquare, faTrashCan, faBars, faAngleRight, faTowerBroadcast, faGlobe, faCheck, faComments );
+library.add(faXmark, faMapPin, faPencil, faPlus, faPenToSquare, faTrashCan, faBars, faAngleRight, faTowerBroadcast, faGlobe, faCheck, faComments );
 Vue.component("font-awesome-icon", FontAwesomeIcon);
 Vue.config.productionTip = false;
 Vue.use(GmapVue, {
   load: {
     // [REQUIRED] This is the unique required value by Google Maps API
-    key: "AIzaSyDLEvPNQnvOtKO4wp1XBfVTQdZIsf3gr6U",
+    key: "AIzaSyDLZeaDGySyzjTZSFlGzLu6GwrWyUI4Ym8",
+    // key: "AIzaSyDLEvPNQnvOtKO4wp1XBfVTQdZIsf3gr6U",
     // [OPTIONAL] This is required if you use the Autocomplete plugin
     // OR: libraries: 'places,drawing'
     // OR: libraries: 'places,drawing,visualization'

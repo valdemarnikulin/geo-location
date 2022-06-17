@@ -1,4 +1,4 @@
-
+// add button geolocate, no mounted
 <template>
   <div>
     <div class="gmaps">
@@ -6,7 +6,7 @@
         ref="gmap"
         :options="optionsMaps"
         :center="center"
-        :zoom="12"
+        :zoom="zoom"
         map-type-id="terrain"
         style="width: 100%; height: 500px; margin-top: 10px"
       >
@@ -22,6 +22,14 @@
         types="(cities)"
         style="width: 50%"
       ></vue-google-autocomplete>
+      <b-button
+            class="map-geolocate"
+            variant="primary"
+            size="sm"
+            @click="geolocate"
+            >
+            <font-awesome-icon icon="fa-solid fa-map-pin" /></b-button
+          >
       <div class="btns">
         <div class="draw-area">
           <b-button
@@ -31,6 +39,7 @@
             @click.prevent="drawArea"
             ><font-awesome-icon icon="fa-solid fa-pencil" /> Draw area</b-button
           >
+          
         </div>
         <div ref="forms" :class="{ 'overflow-forms': isResizeDiv }">
           <b-input-group
@@ -64,6 +73,9 @@
                 ></b-icon>
               </b-button>
 
+              <b-button size="sm" variant="warning" @click="goToArea(item)"
+                ><font-awesome-icon icon="fa-solid fa-map-pin" />
+              </b-button>
               <b-button size="sm" variant="danger" @click="delAreaOfIndex(i)"
                 ><b-icon icon="x"></b-icon>
               </b-button>
@@ -100,6 +112,7 @@ export default {
   // },
   data() {
     return {
+      zoom: 2,
       item: null,
       paths: [],
       // polygons: [],
@@ -127,13 +140,11 @@ export default {
   },
   mounted() {
     this.$refs.address.focus();
-    this.geolocate();
-    this.getDatas();
+    // this.geolocate();
+    // this.getDatas();
   },
   watch: {
-    items() {
-console.log("change items")
-    }
+   
   },
   //  async created() {
   //   try {
@@ -167,6 +178,14 @@ console.log("change items")
 // },
     ...mapMutations(["activeButton", "unActiveButton"]),
     ...mapActions(["getData","getDataOnce"]),
+    goToArea(item) {
+let {coords} = item;
+let [center] = coords;
+this.center.lat = center.lat
+this.center.lng = center.lng
+console.log("🚀 ~ file: GoogleMaps.vue ~ line 186 ~ goToArea ~ this.center", this.center)
+this.zoom = 12
+    },
    async getDatas() {
       // if(!this.$store.state.mapsModule.items){
       //   return
@@ -420,10 +439,9 @@ console.log("change items")
 
       this.center.lat = addressData.latitude;
       this.center.lng = addressData.longitude;
-      console.log(
-        "🚀 ~ file: GoogleMaps.vue ~ line 301 ~ getAddressData ~ this.center",
-        this.center
-      );
+      this.zoom = 12
+      console.log("🚀 ~ file: GoogleMaps.vue ~ line 432 ~ getAddressData ~ this.zoom", this.zoom)
+      
     },
     geolocate() {
       navigator.geolocation.getCurrentPosition((position) => {
@@ -432,6 +450,8 @@ console.log("change items")
           lng: position.coords.longitude,
         };
       });
+      this.zoom = 13
+      console.log("🚀 ~ file: GoogleMaps.vue ~ line 443 ~ geolocate ~ this.zoom", this.zoom)
     },
   },
 
@@ -471,5 +491,11 @@ console.log("change items")
 };
 </script>
 <style scoped>
+.map-geolocate {
+  position: absolute;
+  top: 0;
+  margin-top: 12px;
+  left: 52%;
+}
 @import "../assets/googleMaps.scss";
 </style>
