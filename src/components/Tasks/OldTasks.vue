@@ -153,9 +153,9 @@ export default {
     };
   },
   methods: {
-    ...mapMutations(["showNewTask","addNewTask","deleteItem", "changeIsShowMap"]),
+    ...mapMutations(["showNewTask","addNewTask","deleteItem", "changeIsShowMap","editStatus"]),
     ...mapActions(["getData", "getAllData"]),
-   editItem(id) {
+  async editItem(id) {
       console.log("🚀 ~ file: OldTasks.vue ~ line 159 ~ editItem ~ id", id)
       console.log(
         "$store.state.taskModule.isNewTask",
@@ -164,8 +164,10 @@ export default {
       console.log("payload", id)
       
         this.showNewTask();
-       this.getData(id)
+      await this.getData(id)
 this.changeIsShowMap();
+this.editStatus();
+console.log("edit staus from old task",this.$store.state.mapsModule.status)
 console.log(
         "$store.state.taskModule.isNewTask 22222",
         this.$store.state.taskModule.isNewTask

@@ -80,15 +80,12 @@
                 ><b-icon icon="x"></b-icon>
               </b-button>
             </b-input-group-append>
-
-            <!-- <div v-if="item.name.length <= 2"
-            class="error">Error</div> -->
           </b-input-group>
         </div>
       </div>
     </div>
-    <b-button @click="getDatas">get data</b-button>
-    <div>{{ this.$store.state.mapsModule.items }}</div>
+    <!-- <b-button @click="getDatas">get data</b-button> -->
+    <!-- <div>{{ this.$store.state.mapsModule.items }}</div> -->
   </div>
 </template>
 
@@ -97,7 +94,8 @@
   src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"
 ></script>
 <script>
-// import { getGoogleMapsAPI } from "gmap-vue";
+import { async } from 'gmap-vue';
+import { getGoogleMapsAPI } from "gmap-vue";
 import VueGoogleAutocomplete from "vue-google-autocomplete";
 import { mapActions, mapMutations } from "vuex";
 
@@ -112,7 +110,7 @@ export default {
   // },
   data() {
     return {
-      zoom: 2,
+      zoom: 5,
       item: null,
       paths: [],
       // polygons: [],
@@ -140,6 +138,7 @@ export default {
   },
   mounted() {
     this.$refs.address.focus();
+    this.showOldArea();
     // this.geolocate();
     // this.getDatas();
   },
@@ -169,6 +168,12 @@ export default {
 // }
 //   },
   methods: {
+    showOldArea(){
+      if(this.$store.state.mapsModule.status = 'edit'){
+        this.getDatas()
+        console.log('start load data from showOldArea')
+      }
+    },
 // isSendFunc() {
 //   if(this.isSend){
 //     this.polygons.forEach((poly)=>{
@@ -183,14 +188,17 @@ let {coords} = item;
 let [center] = coords;
 this.center.lat = center.lat
 this.center.lng = center.lng
-console.log("🚀 ~ file: GoogleMaps.vue ~ line 186 ~ goToArea ~ this.center", this.center)
+// console.log("🚀 ~ file: GoogleMaps.vue ~ line 186 ~ goToArea ~ this.center", this.center)
 this.zoom = 12
     },
-   async getDatas() {
+    addPolyOnMap(){
+console.log("start get data from mapsvue")
       // if(!this.$store.state.mapsModule.items){
       //   return
       // }
-      await this.getData();
+
+      // await this.getData();
+
       // await this.getDataOnce();
       let newPolygons = this.$store.state.mapsModule.items;
       console.log(
@@ -210,36 +218,26 @@ this.zoom = 12
           fillOpacity: 0.35,
           editable: false,
         });
+          console.log("🚀 ~ file: GoogleMaps.vue ~ line 216 ~ newPolygons.forEach ~ this.$refs.gmap.$mapObject", this.$refs.gmap.$mapObject)
        console.log("🚀 ~ file: GoogleMaps.vue ~ line 168 ~ newPolygons.forEach ~ newPoly", newPoly)
         this.$store.state.mapsModule.polygons.push(newPoly);
         console.log("🚀 ~ file: GoogleMaps.vue ~ line 195 ~ newPolygons.forEach ~ this.$store.state.mapsModule.polygons", this.$store.state.mapsModule.polygons)
         
       });
       let findPoly = newPolygons.find(el=>el)
+      console.log("🚀 ~ file: GoogleMaps.vue ~ line 228 ~ getDatas ~ findPoly", findPoly)
       console.log("🚀 ~ file: GoogleMaps.vue ~ line 200 ~ getDatas ~ findPoly", findPoly.coords[0].lat)
       this.center = {
         lat:findPoly.coords[0].lat,
         lng:findPoly.coords[0].lng
       }
       console.log("🚀 ~ file: GoogleMaps.vue ~ line 202 ~ getDatas ~ this.center", this.center)
-
-      // this.polygons = [...newPolygons];
-      // console.log(
-      //   "🚀 ~ file: GoogleMaps.vue ~ line 171 ~ getDatas ~ this.polygons",
-      //   this.polygons
-      // );
-      // [this.polygons, ...newPolygons];
-      // console.log(
-      //   "🚀 ~ file: GoogleMaps.vue ~ line 171 ~ getDatas ~ this.polygons",
-      //   this.polygons
-      // );
-      // let arr = this.polygons.concat(newPolygons);
-      // console.log("🚀 ~ file: GoogleMaps.vue ~ line 176 ~ getDatas ~ arr", arr);
-      // console.log(
-      //   "🚀 ~ file: GoogleMaps.vue ~ line 170 ~ getDatas ~ this.polygons",
-      //   this.polygons
-      // );
+    
     },
+   getDatas() {
+
+      setTimeout(this.addPolyOnMap,500)
+     },
     // async getData() {
     //   try {
     //     const res = await axios.get(baseURL);
@@ -456,7 +454,7 @@ this.zoom = 12
   },
 
   computed: {
-    // google: getGoogleMapsAPI,
+    google: getGoogleMapsAPI,
     checkArray() {
       this.$store.state.mapsModule.items.find((item) => {
         if (item.isDisabledForm === false) {

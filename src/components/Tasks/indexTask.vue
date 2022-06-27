@@ -33,10 +33,12 @@ data(){
 },
 methods: {
   
-  ...mapMutations(['showNewTask']),
+  ...mapMutations(['showNewTask', 'addNewStatus']),
 
 scrollToNewTask() {
       this.showNewTask();
+      this.addNewStatus();
+      console.log('status from new', this.$store.state.mapsModule.status)
     },
     
 },

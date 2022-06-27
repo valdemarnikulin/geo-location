@@ -9,7 +9,8 @@ export default {
         isReady: true,
         items: [],
     polygons:[],
-    showMap: false
+    showMap: false,
+    status: null,
         // map: this.$refs.gmap.$mapObject,
     },
     getters: {//computed
@@ -23,6 +24,12 @@ createNameTask(state) {
         //filter
     },
     mutations: {//methods
+        editStatus(state){
+            state.status = 'edit'
+        },
+        addNewStatus(state){
+            state.status = 'new task'
+        },
         updateMessage(state, message) {
             state.message = message
         },
@@ -41,6 +48,7 @@ createNameTask(state) {
         },
         changeIsShowMap(state) {
 state.showMap = true
+console.log("map cahnge")
         }
         
     },
