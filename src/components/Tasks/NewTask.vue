@@ -294,6 +294,7 @@ sendDatas() {
   console.log("🚀 ~ file: NewTask.vue ~ line 275 ~ sendDatas ~ this.$store.state", this.$store.state.mapsModule)
   // this.$store.state.mapsModule.items.push(this.nameTask);
   this.sendData();
+    this.closeNewTask();
   // this.isSend = true;
   // console.log("🚀 ~ file: NewTask.vue ~ line 276 ~ sendDatas ~ this.isSend", this.isSend)
 },

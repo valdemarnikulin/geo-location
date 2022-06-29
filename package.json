@@ -16,6 +16,8 @@
     "@fortawesome/vue-fontawesome": "^2.0.6",
     "@h21-map/google-drawing-manager": "^46.1.0",
     "@riophae/vue-treeselect": "^0.4.0",
+    "@vue/cli-plugin-unit-jest": "^5.0.6",
+    "@vue/test-utils": "^2.0.0",
     "axios": "^0.27.2",
     "bootstrap-vue": "^2.22.0",
     "core-js": "^3.8.3",

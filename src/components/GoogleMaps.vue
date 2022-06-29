@@ -43,17 +43,20 @@
         </div>
         <div ref="forms" :class="{ 'overflow-forms': isResizeDiv }">
           <b-input-group
-            v-for="(item, i) in this.$store.state.mapsModule.items"
+            v-for="(item, i) in items"
             :key="i"
             size="sm"
             class="mt-3 forms-top"
             @mouseover="hoverPolygon(i)"
             @mouseleave="unHoverPolygon"
+             
             novalidate
           >
             <b-form-input
               v-model="item.name"
               :disabled="item.isDisabledForm"
+             @click="goToArea(item)"
+              
               placeholder="Enter name area"
               v-on:keyup.enter="saveName(item, i)"
               ref="input"
@@ -72,10 +75,6 @@
                   :icon="item.isDisabledForm ? 'pencil-square' : 'check2'"
                 ></b-icon>
               </b-button>
-
-              <b-button size="sm" variant="warning" @click="goToArea(item)"
-                ><font-awesome-icon icon="fa-solid fa-map-pin" />
-              </b-button>
               <b-button size="sm" variant="danger" @click="delAreaOfIndex(i)"
                 ><b-icon icon="x"></b-icon>
               </b-button>
@@ -84,8 +83,6 @@
         </div>
       </div>
     </div>
-    <!-- <b-button @click="getDatas">get data</b-button> -->
-    <!-- <div>{{ this.$store.state.mapsModule.items }}</div> -->
   </div>
 </template>
 
@@ -94,26 +91,21 @@
   src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"
 ></script>
 <script>
-import { async } from 'gmap-vue';
+// import { async } from 'gmap-vue';
 import { getGoogleMapsAPI } from "gmap-vue";
 import VueGoogleAutocomplete from "vue-google-autocomplete";
-import { mapActions, mapMutations } from "vuex";
+import { mapActions, mapMutations, mapState } from "vuex";
 
 export default {
   components: { VueGoogleAutocomplete },
   name: "GoogleMaps",
-  // props: {
-  //   isSend: {Boolean,
-    
-  //   deep: true,
-  //   },
-  // },
   data() {
     return {
       zoom: 5,
       item: null,
       paths: [],
-      // polygons: [],
+      polygons: [],
+      items:[],
       connection: null,
       isResizeDiv: false,
       currentPlace: null,
@@ -137,77 +129,38 @@ export default {
     };
   },
   mounted() {
+    this.polygons = [];
+      this.items = [];
     this.$refs.address.focus();
     this.showOldArea();
-    // this.geolocate();
-    // this.getDatas();
+ 
   },
   watch: {
    
   },
-  //  async created() {
-  //   try {
-  //     const res = await axios.get(baseURL);
-
-  //     this.items = res.data;
-  //   } catch (e) {
-  //     console.error(e);
-  //   }
-  // },
-//   watch: {
-// isSend(newVal, oldVal) {
-// console.log("🚀 ~ file: GoogleMaps.vue ~ line 147 ~ oldVal", oldVal)
-// console.log("🚀 ~ file: GoogleMaps.vue ~ line 147 ~ newVal", newVal)
-// console.log("🚀 ~ file: GoogleMaps.vue ~ line 147 ~ isSend ~ isSend", this.isSend)
-//   if(isSend == true){
-// this.polygons.forEach((poly)=>{
-//   poly.setMap(null);
-// })
-// }
-//   console.log("🚀 ~ file: GoogleMaps.vue ~ line 152 ~ this.polygons.forEach ~ this.polygons", this.polygons)
-// }
-//   },
+  
   methods: {
+    ...mapMutations(["activeButton", "unActiveButton", "deletePoly", "deleteItem", "pushItemArea"]),
+    ...mapActions(["getData","getDataOnce"]),
     showOldArea(){
       if(this.$store.state.mapsModule.status = 'edit'){
         this.getDatas()
-        console.log('start load data from showOldArea')
-      }
+       Object.assign(this.items, this.returnData)
+        this.zoom = 12;
+      } 
+      
     },
-// isSendFunc() {
-//   if(this.isSend){
-//     this.polygons.forEach((poly)=>{
-//   poly.setMap(null);
-// })
-//   }
-// },
-    ...mapMutations(["activeButton", "unActiveButton"]),
-    ...mapActions(["getData","getDataOnce"]),
     goToArea(item) {
+      if(item.isDisabledForm == true){
+      }
 let {coords} = item;
 let [center] = coords;
 this.center.lat = center.lat
 this.center.lng = center.lng
-// console.log("🚀 ~ file: GoogleMaps.vue ~ line 186 ~ goToArea ~ this.center", this.center)
 this.zoom = 12
     },
     addPolyOnMap(){
-console.log("start get data from mapsvue")
-      // if(!this.$store.state.mapsModule.items){
-      //   return
-      // }
-
-      // await this.getData();
-
-      // await this.getDataOnce();
-      let newPolygons = this.$store.state.mapsModule.items;
-      console.log(
-        "🚀 ~ file: GoogleMaps.vue ~ line 151 ~ getDatas ~ newPolygons",
-        newPolygons
-      );
-
-      newPolygons.forEach((poly) => {
-        console.log("poly", poly);
+      this.items.forEach((poly) => {
        let newPoly = new google.maps.Polygon({
           map: this.$refs.gmap.$mapObject,
           path: poly.coords,
@@ -218,80 +171,43 @@ console.log("start get data from mapsvue")
           fillOpacity: 0.35,
           editable: false,
         });
-          console.log("🚀 ~ file: GoogleMaps.vue ~ line 216 ~ newPolygons.forEach ~ this.$refs.gmap.$mapObject", this.$refs.gmap.$mapObject)
-       console.log("🚀 ~ file: GoogleMaps.vue ~ line 168 ~ newPolygons.forEach ~ newPoly", newPoly)
-        this.$store.state.mapsModule.polygons.push(newPoly);
-        console.log("🚀 ~ file: GoogleMaps.vue ~ line 195 ~ newPolygons.forEach ~ this.$store.state.mapsModule.polygons", this.$store.state.mapsModule.polygons)
+        
+        this.polygons.push(newPoly);
         
       });
-      let findPoly = newPolygons.find(el=>el)
-      console.log("🚀 ~ file: GoogleMaps.vue ~ line 228 ~ getDatas ~ findPoly", findPoly)
-      console.log("🚀 ~ file: GoogleMaps.vue ~ line 200 ~ getDatas ~ findPoly", findPoly.coords[0].lat)
+      let findPoly = this.items.find(el=>el)
       this.center = {
         lat:findPoly.coords[0].lat,
         lng:findPoly.coords[0].lng
       }
-      console.log("🚀 ~ file: GoogleMaps.vue ~ line 202 ~ getDatas ~ this.center", this.center)
-    
     },
    getDatas() {
-
       setTimeout(this.addPolyOnMap,500)
      },
-    // async getData() {
-    //   try {
-    //     const res = await axios.get(baseURL);
-    //     res.data.forEach((item1) => {
-    //       this.items.this.items.push(item1);
-    //     });
-    //     // this.items = res.data;
-    //     console.log(
-    //       "🚀 ~ file: GoogleMaps.vue ~ line 135 ~ getData ~ this.items",
-    //       this.items
-    //     );
-    //   } catch (e) {
-    //     console.error(e);
-    //   }
-    // },
 
     saveName(item) {
       item.isDisabledForm = !item.isDisabledForm;
-      this.checkArray();
+      this.pushItemArea(item);
     },
     unHoverPolygon() {
-     
-      this.$store.state.mapsModule.polygons.forEach((polygon) => {
+      this.polygons.forEach((polygon) => {
         polygon.setOptions({
           fillOpacity: 0.35,
         });
       });
     },
     hoverPolygon(index) {
-     
-      let findedPolygon = this.$store.state.mapsModule.polygons[index];
+      let findedPolygon = this.polygons[index];
       findedPolygon.setOptions({
         fillOpacity: 0.7,
       });
     },
     delAreaOfIndex(index) {
-      let removePoly = this.$store.state.mapsModule.polygons.splice(index, 1);
+      let removePoly = this.polygons.splice(index, 1);
       removePoly[0].setMap(null);
-      this.$store.state.mapsModule.items.splice(index, 1);
-      // this.lastItemInput();
+      this.items.splice(index, 1);
     },
     drawFreeHand() {
-      // this.activeButton();
-      // this.checkArray();
-      // console.log(
-      //   "🚀 ~ file: GoogleMaps.vue ~ line 180 ~ drawFreeHand ~ this.changeIsReady",
-      //   this.activeButton
-      // );
-      // console.log("isReady", this.$store.state.isReady);
-      // this.isReady = true;
-      // this.$emit("checkArray", {
-      //   isReady: this.isReady,
-      // });
-
       //the polygon
       let poly = new google.maps.Polyline({
         map: this.$refs.gmap.$mapObject,
@@ -332,52 +248,21 @@ console.log("start get data from mapsvue")
             "mousedown"
           );
           this.enable();
-          console.log("this.$refs.gmap.$mapObject", this.$refs.gmap.$mapObject);
-          this.$store.state.mapsModule.polygons.push(poly);
-          console.log(
-            "🚀 ~ file: GoogleMaps.vue ~ line 234 ~ drawFreeHand ~ this.polygons",
-            this.polygons
-          );
+          this.polygons.push(poly);
           let coords = this.getPolygonCoords(poly);
-
-          // this.items.push(
-          //   (this.item = {
-          //     name: "",
-          //     isDisabledForm: false,
-          //     coords: coords,
-          //   })
-          // );
-          console.log(
-            "🚀 ~ file: GoogleMaps.vue ~ line 240 ~ drawFreeHand ~ this.$store.state.items",
-            this.$store.state.mapsModule.items
-          );
-          this.$store.state.mapsModule.items.push({
+          this.items.push({
             name: "",
             isDisabledForm: false,
             coords: coords,
           });
-          console.log(
-            "🚀 ~ file: GoogleMaps.vue ~ line 248 ~ drawFreeHand ~  this.$store.state.mapsModule.items",
-            this.$store.state.mapsModule.items
-          );
-
           let map = this.$refs.gmap.$mapObject;
           map.setOptions({ draggableCursor: "default" });
         }
       );
     },
-    // getPolygonCoords(poly) {
-    //   let len = poly.getPath().getLength();
-    //   let Coordinates = "";
-    //   for (var i = 0; i < len; i++) {
-    //     Coordinates += "{" + poly.getPath().getAt(i).toUrlValue(6) + "}, ";
-    //   }
-    //   let coords = { Coordinates };
-    //   return coords;
-    // },
+   
     getPolygonCoords(poly) {
       let paths = poly.getPath();
-
       let arrayCoordinates = [];
       for (let i = 0; i < paths.length; i++) {
         let Coordinates = {
@@ -386,10 +271,6 @@ console.log("start get data from mapsvue")
         };
         arrayCoordinates.push(Coordinates);
       }
-      console.log(
-        "🚀 ~ file: GoogleMaps.vue ~ line 241 ~ getPolygonCoords ~ arrayCoordinates",
-        arrayCoordinates
-      );
       return arrayCoordinates;
     },
     disable() {
@@ -417,11 +298,6 @@ console.log("start get data from mapsvue")
         }
       );
       this.resizeForms();
-      this.checkArray();
-      // this.$emit("drawArea", {
-      //   isReady: this.isReady,
-      // });
-      // this.isReady = false;
     },
     resizeForms() {
       let height = this.$refs.forms.clientHeight;
@@ -430,16 +306,9 @@ console.log("start get data from mapsvue")
       }
     },
     getAddressData(addressData, placeResultData, id) {
-      console.log(
-        "🚀 ~ file: GoogleMaps.vue ~ line 301 ~ getAddressData ~ this.center",
-        this.center
-      );
-
       this.center.lat = addressData.latitude;
       this.center.lng = addressData.longitude;
-      this.zoom = 12
-      console.log("🚀 ~ file: GoogleMaps.vue ~ line 432 ~ getAddressData ~ this.zoom", this.zoom)
-      
+      this.zoom = 12;      
     },
     geolocate() {
       navigator.geolocation.getCurrentPosition((position) => {
@@ -448,44 +317,23 @@ console.log("start get data from mapsvue")
           lng: position.coords.longitude,
         };
       });
-      this.zoom = 13
-      console.log("🚀 ~ file: GoogleMaps.vue ~ line 443 ~ geolocate ~ this.zoom", this.zoom)
+      this.zoom = 12
     },
   },
 
   computed: {
-    google: getGoogleMapsAPI,
-    checkArray() {
-      this.$store.state.mapsModule.items.find((item) => {
-        if (item.isDisabledForm === false) {
-          return this.unActiveButton();
-          // return item;
-        } else {
-          return this.activeButton();
-        }
-      });
-      // this.$emit("checkArray", {
-      //   items: this.items,
-      //   isReady: this.isReady,
-      //   polygons: this.polygons,
-      // });
+    ...mapState([
+'itemsArea',
+
+    ]),
+    returnData() {
+      return this.$store.state.mapsModule.itemsArea
     },
-    
-    // lastItemInput() {
-    //   // this.items.length === 0 ? (this.isReady = true) : (this.isReady = false);
-    //   // console.log(
-    //   //   "🚀 ~ file: GoogleMaps.vue ~ line 323 ~ lastItemInput ~ this.items.length ",
-    //   //   this.items.length
-    //   // );
-    //   // console.log(
-    //   //   "🚀 ~ file: GoogleMaps.vue ~ line 322 ~ lastItemInput ~ this.isReady",
-    //   //   this.isReady
-    //   // );
-    //   // this.$emit("checkArray", {
-    //   //   isReady: this.isReady,
-    //   // });
-    // },
+    google: getGoogleMapsAPI,
   },
+  destroyed() {
+      console.log('Do you Really want to leave?')
+    },
 };
 </script>
 <style scoped>

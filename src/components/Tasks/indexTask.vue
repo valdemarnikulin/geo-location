@@ -37,8 +37,7 @@ methods: {
 
 scrollToNewTask() {
       this.showNewTask();
-      this.addNewStatus();
-      console.log('status from new', this.$store.state.mapsModule.status)
+      this.addNewStatus('add');
     },
     
 },

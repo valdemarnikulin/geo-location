@@ -77,9 +77,6 @@
           </p>
         </div>
       </div>
-      <b-button @click="getAllData">getAllData</b-button>
-
-
       <b-table responsive="sm" :items="this.$store.state.oldTask.oldTasks" :fields="fields">
         <template #cell(Status)="{ item }">
           <span
@@ -153,31 +150,17 @@ export default {
     };
   },
   methods: {
-    ...mapMutations(["showNewTask","addNewTask","deleteItem", "changeIsShowMap","editStatus"]),
+    ...mapMutations(["showNewTask","addNewTask","deleteItem", "changeIsShowMap","editStatus", "addNewStatus"]),
     ...mapActions(["getData", "getAllData"]),
-  async editItem(id) {
-      console.log("🚀 ~ file: OldTasks.vue ~ line 159 ~ editItem ~ id", id)
-      console.log(
-        "$store.state.taskModule.isNewTask",
-        this.$store.state.taskModule.isNewTask
-      );
-      console.log("payload", id)
-      
+  async editItem(id) {  
         this.showNewTask();
       await this.getData(id)
 this.changeIsShowMap();
-this.editStatus();
-console.log("edit staus from old task",this.$store.state.mapsModule.status)
-console.log(
-        "$store.state.taskModule.isNewTask 22222",
-        this.$store.state.taskModule.isNewTask
-      );
+this.addNewStatus('edit');
     },
     
     checkItems() {
       this.addNewTask();
-      // this.$store.state.mapsModule.items;
-      console.log("🚀 ~ file: OldTasks.vue ~ line 178 ~ checkItems ~  this.$store.state.mapsModule.items",  this.$store.state.mapsModule.items)
     },
   },
 };
