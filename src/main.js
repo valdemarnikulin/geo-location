@@ -4,7 +4,7 @@ import GmapVue from "gmap-vue";
 import { BootstrapVue, IconsPlugin } from "bootstrap-vue";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
-// import { library } from "@fortawesome/fontawesome-svg-core";
+import { DateTime } from "luxon"
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faXmark,
   faPencil,
@@ -42,6 +42,7 @@ Vue.use(VueAxios, axios);
 library.add(faXmark, faMapPin, faPencil, faPlus, faPenToSquare, faTrashCan, faBars, faAngleRight, faTowerBroadcast, faGlobe, faCheck, faComments );
 Vue.component("font-awesome-icon", FontAwesomeIcon);
 Vue.config.productionTip = false;
+Object.defineProperty(Vue.prototype, '$DateTime', { value: DateTime });
 Vue.use(GmapVue, {
   load: {
     // [REQUIRED] This is the unique required value by Google Maps API
@@ -82,7 +83,6 @@ Vue.use(GmapVue, {
 
 Vue.config.productionTip = false;
 Vue.use(BootstrapVue);
-// Optionally install the BootstrapVue icon components plugin
 Vue.use(IconsPlugin);
 new Vue({
   render: (h) => h(App),

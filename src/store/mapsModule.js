@@ -1,5 +1,5 @@
 import axios from "axios";
-const baseURL = "http://localhost:3000/media";
+const baseURL = "http://localhost:3000/Areas";
 export default {
     
     state: {
@@ -28,7 +28,6 @@ state.itemsArea.push(payload);
 },
         addNewStatus(state, payload){
             state.status = payload
-            console.log("🚀 ~ file: mapsModule.js ~ line 44 ~ addNewStatus ~ state.status", state.status)
         },
         updateMessage(state, message) {
             state.message = message
@@ -47,20 +46,21 @@ state.itemsArea.push(payload);
         },
         changeIsShowMap(state) {
 state.showMap = true
-        }
+        },
+        DELETE_AREA(state, payload) {      
+            let findItem = state.itemsArea.findIndex(el => el.id == payload.id)     
+            state.itemsArea.splice(findItem,1);
+          }, 
         
     },
     actions: {
         //async fetch server
         async sendData(state) {
             try {
-                
-                const params = {
-                    
-                    taskName: state.state.message,
+                const params = {   
+                    // taskName: state.state.message,
                     Areas: state.state.itemsArea
                 }
-                // const res = 
                 await axios.post(baseURL, params);
               state.state.itemsArea = [];
               state.state.polygons.forEach((poly) => {
@@ -70,8 +70,6 @@ state.showMap = true
               console.error(e);
             }
           },
-
-
           async getData(state,payload) {
             state.state.itemsArea = [];
               try { 
@@ -85,5 +83,10 @@ state.showMap = true
                 console.error(error);
               }
           }, 
+          async deleteArea({commit}, payload) {
+            console.log("🚀 ~ file: mapsModule.js ~ line 88 ~ deleteArea ~ payload", payload)
+            await axios.delete(`${baseURL}/${payload.id}`)
+            commit('DELETE_AREA', payload)
+          }
     },
 }

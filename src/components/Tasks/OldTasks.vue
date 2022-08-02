@@ -1,12 +1,8 @@
 // switch checkbox
 <template>
-  <div class="col my-header py-3">
+  <div class="col my-header py-3" >
     <div class="circle-wrapper">
       <div class="circle-my">
-        <!-- <b-icon
-          icon="check-circle"
-          style="z-index: 100; background-color: #fff"
-        ></b-icon> -->
         <font-awesome-icon
           icon="fa-solid fa-comments"
           style="z-index: 100; color: #fff"
@@ -53,7 +49,17 @@
             </div>
           </div>
 <div>
-<slot name="btnAdd"></slot>
+<b-button
+              v-scroll-to="'#newTask'"
+              style="padding: 0.375rem 1.5rem"
+              class="m-1 shadow"
+              size="sm"
+              variant="primary"
+              @click="scrollToNewTask"
+              :disabled="this.$store.state.taskModule.isNewTask"
+              ><b-icon icon="plus" class="opacity-7 pr-2" scale="3" />
+              New
+            </b-button>
 </div>
 
 <!-- <slot name="another"></slot> -->
@@ -77,7 +83,7 @@
           </p>
         </div>
       </div>
-      <b-table responsive="sm" :items="this.$store.state.oldTask.oldTasks" :fields="fields">
+      <b-table responsive="sm" :items="itemsOfOldTasks" :fields="fields">
         <template #cell(Status)="{ item }">
           <span
             class="badge badge-primary align-text-bottom ml-1"
@@ -90,11 +96,18 @@
             {{ item.new }}NEW
           </span>
         </template>
+        <template #cell(Area_from_map)="{ item }">
+          <span
+            class="badge badge-primary align-text-bottom"
+          >
+            {{ item.showMap }}
+          </span>
+        </template>
         <template #cell(Name)="{ item }">
           <span>{{ item.Name }}</span>
           <div class="mt-1 small">
-            {{ item.data }}
-            <span class="opacity-7 ml-2"> {{ item.time }}</span>
+            {{ item.date_from }} - {{ item.date_to }}
+            <span class="opacity-7 ml-2"> {{ item.time_from }} - {{ item.time_to }}</span>
           </div>
         </template>
         <template #cell(Actions)="{ item }">
@@ -103,7 +116,8 @@
          class="border-none" 
          size="sm" 
          variant="outline-primary" 
-         @click="editItem(item.id)"
+         :disabled="disableBtn"
+         @click="editItem(item)"
             ><font-awesome-icon icon="fa-solid fa-pen-to-square" />
             </b-button>
           
@@ -111,57 +125,71 @@
             ><font-awesome-icon icon="fa-solid fa-trash-can" /></b-button
           >
         </template>
-        <!-- <template #cell(Actions)="btn">
-          <b-button
-            disabled
-            class="btn__news"
-            size="sm"
-            variant="outline-primary"
-            ><font-awesome-icon class="mr-1" icon="fa-solid fa-pen-to-square" />b-button>
-        </template> -->
-        <!-- <template #cell(on_off)="on_off">
-          <b-form-checkbox size="lg" switch class="switch__body"
-            >{{ on_off.on_off }}
-            <span class="switch__label">asdasdas</span></b-form-checkbox
-          >
-        </template> -->
       </b-table>
     </b-card>
+     <new-task v-if="this.$store.state.taskModule.isNewTask == true" id="newTask" @updateDisableBtn="updateDisableBtn" />
   </div>
 </template>
 
 <script>
 import { mapMutations, mapActions } from "vuex";
-
+import NewTask from "./NewTask.vue"
 export default {
+  components:{
+    NewTask
+  },
+ 
   data() {
     return {
       fields: [
         "Name",
-        "type_of_test",
-        "net_type",
+        "Area_from_map",
         "intensity",
-        // "Status",
-        // "on_off",
         "Actions",
       ],
-      isswitch: null,
-      
+      itemsOfOldTasks: [],
+      disableBtn:false
     };
   },
+ async beforeMount() {
+   console.log("beforemount call")
+ await this.getAllData();
+    // const [data] = this.returnData
+    this.itemsOfOldTasks = this.returnData;
+  },
   methods: {
-    ...mapMutations(["showNewTask","addNewTask","deleteItem", "changeIsShowMap","editStatus", "addNewStatus"]),
-    ...mapActions(["getData", "getAllData"]),
-  async editItem(id) {  
+    ...mapMutations(["showNewTask", "changeIsShowMap","editStatus", "addNewStatus"]),
+    ...mapActions(["getData", "getAllData", "addNewTask","deleteTask", "getCurrentTask"]),
+   async updateDisableBtn(value) {
+      this.disableBtn = value;
+    await  this.getAllData();
+   this.itemsOfOldTasks = this.returnData;
+   console.log("🚀 ~ file: OldTasks.vue ~ line 184 ~ updateDisableBtn ~ this.itemsOfOldTasks", this.itemsOfOldTasks)
+    },
+    scrollToNewTask() {
+      this.showNewTask();
+      this.addNewStatus('add');
+    },
+  async editItem(item) {  
+       console.log("🚀 ~ file: OldTasks.vue ~ line 183 ~ editItem ~ item", item)
+       this.disableBtn = true
+        this.addNewStatus('edit');
+      await this.getCurrentTask(item)
         this.showNewTask();
-      await this.getData(id)
-this.changeIsShowMap();
-this.addNewStatus('edit');
     },
-    
-    checkItems() {
-      this.addNewTask();
+  async  deleteItem(item) {
+ await this.deleteTask(item);
+ let findItem = this.itemsOfOldTasks.findIndex(el => el.id == item.id)     
+       this.itemsOfOldTasks.splice(findItem,1);
     },
+  },
+  computed: {
+returnData() {
+  return this.$store.state.oldTasks.oldTasks;
+}
+  },
+  unmounted() {
+    console.log("do you really leave?")
   },
 };
 </script>

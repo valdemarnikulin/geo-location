@@ -27,7 +27,7 @@
             <div><b>Date</b></div>
             <div class="opacity-7">
               <!-- 2022 May 08 - 21:20:07 UTC+6 -->
-              {{currentDateTime()}}
+              {{currentDateTimes}}
               </div>
           </div>
           <div class="wrap__icons">
@@ -62,13 +62,20 @@
         </div>
       </div>
     </b-navbar>
+    <message-list 
+    channelId='123f'
+    loadMoreBtnText='Load more'
+    />
   </div>
 </template>
 
 <script>
+import MessageList from '@/components/MessageList.vue'
 export default {
+  components:{ MessageList },
   data(){
     return{
+     msg:'new message', 
       time:'',
 searchText:'',
 isSearch: true,
@@ -79,15 +86,15 @@ isSearch: true,
 this.isSearch = !this.isSearch;
     },
     currentDateTime() {
-      setTimeout(() => {
-          this.time = new Date()
-        }, 1000)
-     
-      let date = this.time.getFullYear()+'-'+(this.time.getMonth()+1)+'-'+this.time.getDate();
-      let time = this.time.getHours() + ":" + this.time.getMinutes() + ":" + this.time.getSeconds();
-      let dateTime = date +' '+ time;
-
-      return dateTime;
+     setTimeout(() => {
+     this.currentDateTimes
+      }, 1000);
+    }
+  },
+  computed: {
+currentDateTimes() {
+    // return  this.$DateTime.local().toLocaleString(this.$DateTime.DATETIME_FULL);
+    return  this.$DateTime.local().toLocaleString(this.$DateTime.DATETIME_FULL_WITH_SECONDS);
     }
   }
 };

@@ -1,17 +1,15 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import mapsModule from './mapsModule';
-// import mapsModule from './mapsModule';
 import taskModule from './tasks/taskModule';
-import oldTask from './tasks/oldTask';
-// import taskModule from './tasks/taskModule';
-// import oldTask from './tasks/oldTask';
+import oldTasks from './tasks/oldTasks';
+
 Vue.use(Vuex);
 
 export default new Vuex.Store({
     modules: {
         mapsModule,
         taskModule,
-        oldTask
+        oldTasks
     }
 })
