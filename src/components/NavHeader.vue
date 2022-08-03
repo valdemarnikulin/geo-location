@@ -26,8 +26,8 @@
           <div class="wrap__date">
             <div><b>Date</b></div>
             <div class="opacity-7">
-              <!-- 2022 May 08 - 21:20:07 UTC+6 -->
-              {{currentDateTimes}}
+              2022 May 08 - 21:20:07 UTC+6
+              <!-- {{currentDateTimes}} -->
               </div>
           </div>
           <div class="wrap__icons">
@@ -66,13 +66,21 @@
     channelId='123f'
     loadMoreBtnText='Load more'
     />
+    <button @click="addNewStatus('edit')">add new status</button>
   </div>
 </template>
 
 <script>
+import { BAvatar,BNavbar,BButton,BIcon,BBadge, VBToggle } from 'bootstrap-vue'
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+
 import MessageList from '@/components/MessageList.vue'
+import { mapMutations } from "vuex";
 export default {
-  components:{ MessageList },
+  components:{ MessageList, BAvatar,BNavbar,BButton,BIcon,BBadge,FontAwesomeIcon },
+  directives: {
+  'b-toggle': VBToggle
+},
   data(){
     return{
      msg:'new message', 
@@ -82,21 +90,28 @@ isSearch: true,
     };
   },
   methods:{
+    ...mapMutations(['addNewStatus', 'pushItems']),
+   
+     
+      // this.$store.commit("addNewStatus", {String:"edit"})
+   
+ // need delete. this for test
     changeState(){
 this.isSearch = !this.isSearch;
+
     },
-    currentDateTime() {
-     setTimeout(() => {
-     this.currentDateTimes
-      }, 1000);
-    }
+    // currentDateTime() {
+    //  setTimeout(() => {
+    //  this.currentDateTimes
+    //   }, 1000);
+    // }
   },
-  computed: {
-currentDateTimes() {
-    // return  this.$DateTime.local().toLocaleString(this.$DateTime.DATETIME_FULL);
-    return  this.$DateTime.local().toLocaleString(this.$DateTime.DATETIME_FULL_WITH_SECONDS);
-    }
-  }
+//   computed: {
+// currentDateTimes() {
+//     // return  this.$DateTime.local().toLocaleString(this.$DateTime.DATETIME_FULL);
+//     return  this.$DateTime.local().toLocaleString(this.$DateTime.DATETIME_FULL_WITH_SECONDS);
+//     }
+//   }
 };
 </script>
 

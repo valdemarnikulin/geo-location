@@ -152,9 +152,7 @@ export default {
     };
   },
  async beforeMount() {
-   console.log("beforemount call")
  await this.getAllData();
-    // const [data] = this.returnData
     this.itemsOfOldTasks = this.returnData;
   },
   methods: {
@@ -164,7 +162,6 @@ export default {
       this.disableBtn = value;
     await  this.getAllData();
    this.itemsOfOldTasks = this.returnData;
-   console.log("🚀 ~ file: OldTasks.vue ~ line 184 ~ updateDisableBtn ~ this.itemsOfOldTasks", this.itemsOfOldTasks)
     },
     scrollToNewTask() {
       this.showNewTask();

@@ -1,6 +1,4 @@
-/**
- * @jest-environment jsdom
- */
+
 import { mount, createLocalVue } from '@vue/test-utils'
 import MessageList from '@/components/MessageList.vue'
 // import {getData} from '@/api/MessageList';
