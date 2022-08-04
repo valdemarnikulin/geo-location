@@ -1,20 +1,35 @@
-import { mount } from '@vue/test-utils'
+import {  createLocalVue, shallowMount } from '@vue/test-utils'
 import GoogleMaps from '@/components/GoogleMaps.vue'
+import Vuex from "vuex"
+// import Vue from 'vue'
+const localVue = createLocalVue()
 
-
-describe('MessageList.vue testing', () => {
-    // const vueInstance = createLocalVue();
-    const wrapper = mount(GoogleMaps, {
-    //   vueInstance,
-      propsData: {}
-    })
-
-    // it('inizialized correctly', () => {
-    //     expect(wrapper.isVueInstance()).toBe(true)
-    //     expect(wrapper.is(GoogleMaps)).toBe(true)
-    //   })
-    it('renders props.msg when passed', () => {
-        const msg = 'new message'
-        expect(wrapper.text()).toMatch(msg)
+localVue.use(Vuex)
+describe('GoogleMaps.vue testing', () => {
+      let mutations
+      let store
+      let methods
+   let  mockData = {
+coords: [],
+isDisabled: false,
+name:""
+    }
+      beforeEach(() => {
+        mutations = {
+            addNewStatus: jest.fn(),
+        },
+        methods = {
+          goToArea:jest.fn()
+        },
+        store = new Vuex.Store({
+            mutations
+        })
       })
-})
+    
+      it('dispatches "actionInput" when input event value is "input"', async () => {
+        const wrapper = shallowMount(GoogleMaps, { store, localVue })
+        const button = wrapper.find('input')
+        await button.trigger('click')
+        expect(methods.goToArea).toBeCalledWith({},mockData)
+      })
+  })
