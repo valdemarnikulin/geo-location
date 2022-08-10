@@ -1,35 +1,52 @@
-import {  createLocalVue, shallowMount } from '@vue/test-utils'
-import GoogleMaps from '@/components/GoogleMaps.vue'
-import Vuex from "vuex"
-// import Vue from 'vue'
-const localVue = createLocalVue()
+/* eslint-disable no-undef */
+import {
+  initialize,
+  Map,
+  Marker,
+  Polygon,
+  mockInstances,
+} from "@googlemaps/jest-mocks";
 
-localVue.use(Vuex)
-describe('GoogleMaps.vue testing', () => {
-      let mutations
-      let store
-      let methods
-   let  mockData = {
-coords: [],
-isDisabled: false,
-name:""
-    }
-      beforeEach(() => {
-        mutations = {
-            addNewStatus: jest.fn(),
-        },
-        methods = {
-          goToArea:jest.fn()
-        },
-        store = new Vuex.Store({
-            mutations
-        })
-      })
-    
-      it('dispatches "actionInput" when input event value is "input"', async () => {
-        const wrapper = shallowMount(GoogleMaps, { store, localVue })
-        const button = wrapper.find('input')
-        await button.trigger('click')
-        expect(methods.goToArea).toBeCalledWith({},mockData)
-      })
-  })
+beforeEach(() => {
+  initialize();
+});
+
+test("my test", () => {
+  const map = new google.maps.Map(null);
+  const markerOne = new google.maps.Marker();
+  const markerTwo = new google.maps.Marker();
+
+  map.setHeading(8);
+  markerOne.setMap(map);
+  markerTwo.setLabel("My marker");
+
+  const mapMocks = mockInstances.get(Map);
+  const markerMocks = mockInstances.get(Marker);
+
+  expect(mapMocks).toHaveLength(1);
+  expect(markerMocks).toHaveLength(2);
+  expect(mapMocks[0].setHeading).toHaveBeenCalledWith(8);
+  expect(markerMocks[0].setMap).toHaveBeenCalledTimes(1);
+  expect(markerMocks[1].setLabel).toHaveBeenCalledWith("My marker");
+});
+test("test polygon", () => {
+  const map = new google.maps.Map(null);
+  const polygonOne = new google.maps.Polygon();
+  const polygonTwo = new google.maps.Polygon();
+
+  map.setHeading(8);
+  polygonOne.setMap(map);
+  polygonTwo.setMap(map);
+
+  const mapMocks = mockInstances.get(Map);
+  const polygonMocks = mockInstances.get(Polygon);
+
+  expect(mapMocks).toHaveLength(1);
+  expect(polygonMocks).toHaveLength(2);
+  expect(mapMocks[0].setHeading).toHaveBeenCalledWith(8);
+  expect(polygonMocks[0].setMap).toHaveBeenCalledTimes(1);
+});
+beforeEach(() => {
+  mockInstances.clearAll();
+  mockInstances.clear(Map, Polygon, Marker);
+});

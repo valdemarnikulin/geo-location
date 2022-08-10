@@ -1,129 +1,153 @@
 <template>
-  <div id="my-sidebar" class="wrapper">
-    <div class="my-sidebar">
-      <div style="display: flex; justify-content: center" class="my-4">
-        <b-img
-          style="width: 200px; height: 23px"
-          src="https://dev-cab.pingocean.com/img/logo.d9ee8fef.svg"
-        ></b-img>
-      </div>
-      <div class="p-3">
-        <nav class="mb-3">
-          <b-nav vertical>
-            <b-nav-item active class="nav__link"
-              ><div>
-                <b-icon icon="house-door" class="mr-2"></b-icon> Home page
-              </div>
-              <div></div>
-            </b-nav-item>
-            <b-nav-item active class="nav__link"
-              ><div>
-                <b-icon icon="eyeglasses" class="mr-2"></b-icon> Voice Fraud
-                Detection
-              </div>
-              <font-awesome-icon icon="fa-solid fa-angle-right"
-            /></b-nav-item>
-            <b-nav-item active class="nav__link"
-              ><div>
-                <b-icon icon="chat-left" class="mr-2"></b-icon>
-                SMS Fraud Detection
-              </div>
-              <font-awesome-icon icon="fa-solid fa-angle-right"
-            /></b-nav-item>
-            <b-nav-item active class="nav__link"
-              ><div>
-                <font-awesome-icon
-                  icon="fa-solid fa-tower-broadcast"
-                  class="mr-2"
-                />
-                Voice Routes Quality
-              </div>
-              <font-awesome-icon icon="fa-solid fa-angle-right"
-            /></b-nav-item>
-            <b-nav-item active class="nav__link"
-              ><div>
-                <b-icon icon="chat-left-dots" class="mr-2"></b-icon> SMS Routes
-                Quality
-              </div>
-              <font-awesome-icon icon="fa-solid fa-angle-right"
-            /></b-nav-item>
-            <b-nav-item active class="nav__link"
-              ><div>
-                <b-icon icon="globe" class="mr-2"></b-icon>
-                eSIM Roaming Testing
-              </div>
-              <font-awesome-icon icon="fa-solid fa-angle-right"
-            /></b-nav-item>
-            <b-nav-item active class="nav__link"
-              ><div>
-                <b-icon icon="speedometer2" class="mr-2"></b-icon> Data Testing
-              </div>
-              <font-awesome-icon icon="fa-solid fa-angle-right"
-            /></b-nav-item>
-            <b-nav-item active class="nav__link"
-              ><div><b-icon icon="megaphone" class="mr-2"></b-icon> Spam</div>
-              <font-awesome-icon icon="fa-solid fa-angle-right"
-            /></b-nav-item>
-            <b-nav-item active class="nav__link"
-              ><div><b-icon icon="gear" class="mr-2"></b-icon> Settings</div>
-              <font-awesome-icon icon="fa-solid fa-angle-right"
-            /></b-nav-item>
-            <b-nav-item active class="nav__link"
-              ><div>
-                <b-icon icon="chat-square-text" class="mr-2"></b-icon> Tickets
-              </div>
-              <div></div>
-            </b-nav-item>
-            <b-nav-item active class="nav__link"
-              ><div><b-icon icon="wallet" class="mr-2"></b-icon> Billing</div>
-              <div></div>
-            </b-nav-item>
-          </b-nav>
-        </nav>
-      </div>
+<div class="wrapper">
+    <div id="my-sidebar" class="my-sidebar">
+        <div style="display: flex; justify-content: center" class="my-4 logo">
+            <b-img class="sidebar-links-change" style="width: 200px; height: 23px" src="https://dev-cab.pingocean.com/img/logo.d9ee8fef.svg"></b-img>
+        </div>
+        <div class="p-3">
+            <div class="mb-3">
+                <ul class="vertical">
+                    <li class="nav__link">
+                        <div>
+                            <router-link class="sidebar-links" to="/">
+                                <b-icon font-scale="1.5" icon="house-door" class="mr-2"></b-icon>
+                                <div class="sidebar-links-change">
+                                    Home
+                                </div>
+                            </router-link>
+                        </div>
+                    </li>
+                    <li active class="nav__link">
+                        <div>
+                            <router-link to="/OldTasks" class="sidebar-links">
+                                <b-icon font-scale="1.5" icon="eyeglasses" class="mr-2"></b-icon>
+                                <div class="sidebar-links-change">
+                                    Tasks
+                                </div>
+                            </router-link>
+                        </div>
+                    </li>
+                    <li class="nav__link">
+                        <div>
+                            <router-link class="sidebar-links" to="/FormPage">
+                                <b-icon font-scale="1.5" icon="wallet" class="mr-2">
+                                </b-icon>
+                                <div class="sidebar-links-change">
+                                    Registration or login
+                                </div>
+                            </router-link>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
     </div>
-  </div>
+</div>
 </template>
 
 <script>
 export default {
-  data() {
-    return {
-      src: "https://dev-cab.pingocean.com/img/logo.d9ee8fef.svg",
-    };
-  },
-};
+    data() {
+        return {
+        };
+    },
+    methods: {
+
+    },
+    watch: {
+        showSideBar(newValue,) {
+            let textLinks = document.getElementsByClassName('sidebar-links-change')
+            let sidebar = document.getElementById('my-sidebar')
+            if (newValue == true) {
+                for (const el of textLinks) {
+                    el.style.display = 'none'
+                    el.style.opacity = '0'
+                }
+                sidebar.style.width = '80px'
+            } else {
+                for (const el of textLinks) {
+                    setTimeout(() => {
+                        el.style.display = 'block'
+                    }, 1000);
+                    setTimeout(() => {
+                        el.style.opacity = '1'
+                    }, 1100);
+                }
+                sidebar.style.width = '240px'
+            }
+        },
+    },
+    computed: {
+        showSideBar() {
+            return this.$store.state.sidebar.showSideBar
+        }
+    }
+}
 </script>
 
 <style lang="scss" scoped>
 @import "../assets/custom.scss";
+
 a {
-  color: white !important;
-  font-size: 0.94rem;
+    color: white !important;
+    font-size: 0.94rem;
 }
+
+li {
+    list-style: none;
+}
+
+ul {
+    padding-inline-start: 0;
+}
+
+.logo {
+    min-height: 23px;
+}
+
+.vertical {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.sidebar-links {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+}
+
+.sidebar-links-change {
+    opacity: 1;
+    transition: opacity 1s;
+}
+
 .nav-link {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .sidebar-self {
-  width: 280px;
+    width: 280px;
 }
 
 .my-sidebar {
-  width: 280px;
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100vh;
-  z-index: 999;
-  background: #0e0f3e;
-  color: #fff;
-  transition: all 0.3s;
+    width: 240px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    z-index: 999;
+    background: #0e0f3e;
+    color: #fff;
+    transition: width 1s;
 }
+
 .wrapper {
-  display: flex;
-  width: 100%;
+    display: flex;
+    width: 100%;
+
 }
 </style>

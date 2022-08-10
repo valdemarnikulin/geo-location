@@ -7,7 +7,17 @@ import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
 import { DateTime } from "luxon"
 import { library } from "@fortawesome/fontawesome-svg-core";
-import { faXmark,
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import axios from 'axios';
+import VueAxios from 'vue-axios';
+import store from './store';
+import VueScrollTo from 'vue-scrollto';
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/auth';
+import 'firebase/compat/firestore';
+
+import { 
+  faXmark,
   faPencil,
   faPlus,
   faPenToSquare,
@@ -18,14 +28,35 @@ import { faXmark,
   faTowerBroadcast,
   faGlobe,
   faComments,
-  faMapPin
+  faMapPin,
+  faSearch,
+  faTimes,
+  faPaperPlane,
+  faSmile,
+  faPaperclip,
 } from "@fortawesome/free-solid-svg-icons";
 
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import axios from 'axios';
-import VueAxios from 'vue-axios';
-import store from './store';
-import VueScrollTo from 'vue-scrollto';
+
+
+Vue.directive('click-outside', {
+  bind(el, binding) {
+      el.addEventListener('mousedown', e => e.stopPropagation());
+      el.addEventListener('mouseup', e => e.stopPropagation());
+      el.addEventListener('click', e => e.stopPropagation());
+      el.addEventListener('select', e => e.stopPropagation());
+      document.addEventListener('mouseup', binding.value);
+      document.addEventListener('mousedown', binding.value);
+      document.addEventListener('click', binding.value);
+      document.addEventListener('select', binding.value);
+  },
+  // },
+  unbind(el, binding) {
+      document.removeEventListener('mouseup', binding.value);
+      document.removeEventListener('mousedown', binding.value);
+      document.removeEventListener('click', binding.value);
+      document.removeEventListener('select', binding.value);
+  }
+});
 Vue.use(VueScrollTo, {
   container: "body",
   duration: 500,
@@ -40,58 +71,53 @@ Vue.use(VueScrollTo, {
   y: true
 })
 Vue.use(VueAxios, axios);
-library.add(faXmark, faMapPin, faPencil, faPlus, faPenToSquare, faTrashCan, faBars, faAngleRight, faTowerBroadcast, faGlobe, faCheck, faComments );
+library.add(faXmark,faPaperPlane,faSmile,faPaperclip,faTimes, faSearch, faMapPin, faPencil, faPlus, faPenToSquare, faTrashCan, faBars, faAngleRight, faTowerBroadcast, faGlobe, faCheck, faComments );
 Vue.component("font-awesome-icon", FontAwesomeIcon);
 Vue.config.productionTip = false;
 Object.defineProperty(Vue.prototype, '$DateTime', { value: DateTime });
 Vue.use(GmapVue, {
   load: {
-    // [REQUIRED] This is the unique required value by Google Maps API
     key: "AIzaSyDLZeaDGySyzjTZSFlGzLu6GwrWyUI4Ym8",
-    // key: "AIzaSyDLEvPNQnvOtKO4wp1XBfVTQdZIsf3gr6U",
-    // [OPTIONAL] This is required if you use the Autocomplete plugin
-    // OR: libraries: 'places,drawing'
-    // OR: libraries: 'places,drawing,visualization'
-    // (as you require)
     libraries: "places, drawing",
-
-    // [OPTIONAL] If you want to set the version, you can do so:
     v: "3.26",
-
-    // This option was added on v3.0.0 but will be removed in the next major release.
-    // If you already have an script tag that loads Google Maps API and you want to use it set you callback
-    // here and our callback `GoogleMapsCallback` will execute your custom callback at the end; it must attached
-    // to the `window` object, is the only requirement.
     customCallback: "MyCustomCallback",
   },
-
-  // [OPTIONAL] If you intend to programmatically custom event listener code
-  // (e.g. `this.$refs.gmap.$on('zoom_changed', someFunc)`)
-  // instead of going through Vue templates (e.g. `<GmapMap @zoom_changed="someFunc">`)
-  // you might need to turn this on.
   autoBindAllEvents: false,
-
-  // [OPTIONAL] If you want to manually install components, e.g.
-  // import {GmapMarker} from 'gmap-vue/src/components/marker'
-  // Vue.component('GmapMarker', GmapMarker)
-  // then set installComponents to 'false'.
-  // If you want to automatically install all the components this property must be set to 'true':
   installComponents: true,
-
-  // Load the Google Maps API dynamically, if you set this to `true` the plugin doesn't load the Google Maps API
   dynamicLoad: false,
 });
 
 Vue.config.productionTip = false;
 Vue.use(BootstrapVue);
 Vue.use(IconsPlugin);
-Vue.prototype.$http = axios;
 const token = localStorage.getItem('token')
 if (token) {
-  Vue.prototype.$http.defaults.headers.common['Authorization'] = token
+  axios.defaults.headers.common['Authorization'] = token
 }
-new Vue({
-  render: (h) => h(App),
+
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCbJaBlSpAqfhb9dmN2pWQOdzyuSyyvIMA",
+  authDomain: "my-app--maps.firebaseapp.com",
+  projectId: "my-app--maps",
+  storageBucket: "my-app--maps.appspot.com",
+  messagingSenderId: "735582969026",
+  appId: "1:735582969026:web:485be50c62ebeb113aaf5b"
+};
+const firebaseApp = firebase.initializeApp(firebaseConfig);
+const db = firebaseApp.firestore();
+const auth = firebase.auth();
+// firebase().firestore().settings({
+//   experimentalForceLongPolling: true, // this line
+//   useFetchStreams: false, // and this line
+// })
+
+
+export { auth, db };
+
+firebase.auth().onAuthStateChanged(() => new Vue({
+  render: h => h(App),
   store, 
   router,
-}).$mount("#app");
+}).$mount('#app'));
+

@@ -1,117 +1,124 @@
 <template>
-  <div>
-    <b-navbar
-      class="my-navbar pr-4"
-      toggleable="lg"
-      type="dark"
-      variant="white"
-    >
-      <div class="navbar__left">
-        <b-button v-b-toggle.my-sidebar class="mr-2 sidebar-toggle opacity-5"
-          ><font-awesome-icon
-            style="width: 20px; height: 20px"
-            icon="fa-solid fa-bars"
-        /></b-button>
-        <div class="navbar__icon" @click="changeState">
-          <div v-if="isSearch">
-          <b-icon icon="search" font-scale="2"></b-icon>
-          </div>
-          <div v-else>
-            <b-input v-model="searchText"></b-input>
-          </div>
+<div id="my-header" class="my-navbar">
+    <b-navbar class="navbar-shadow pr-4" toggleable="lg" type="dark" variant="white">
+        <div class="navbar__left">
+            <b-button @click="changeShow" class="mr-2 sidebar-toggle opacity-5">
+                <font-awesome-icon style="width: 20px; height: 20px" icon="fa-solid fa-bars" />
+            </b-button>
+            <search-box></search-box>
         </div>
-      </div>
-      <div class="navbar__right">
-        <div class="wrap pr-5">
-          <div class="wrap__date">
-            <div><b>Date</b></div>
-            <div class="opacity-7">
-              2022 May 08 - 21:20:07 UTC+6
-              <!-- {{currentDateTimes}} -->
-              </div>
-          </div>
-          <div class="wrap__icons">
-            <div class="wrap__usa mr-2">
-              <img
-                style="transform: scale(calc(0.9))"
-                src="../assets/i.jpg"
-                alt="usa"
-              />
+        <div class="navbar__right">
+            <div class="wrap pr-5">
+                <div class="wrap__date">
+                    <div><b>Date</b></div>
+                    <div class="opacity-7">
+                        {{time}}
+                    </div>
+                </div>
+                <div class="wrap__icons">
+                    <div class="wrap__usa mr-2">
+                        <img style="transform: scale(calc(0.9))" src="../assets/i.jpg" alt="usa" />
+                    </div>
+                    <div class="megaphone__badge">
+                        <b-icon class="wrap__mega" icon="megaphone" variant="success" font-scale="3"></b-icon>
+                        <b-badge class="badge-dot" variant="success">.</b-badge>
+                    </div>
+                </div>
             </div>
-
-            <div class="megaphone__badge">
-              <b-icon
-                class="wrap__mega"
-                icon="megaphone"
-                variant="success"
-                font-scale="3"
-              ></b-icon>
-              <b-badge class="badge-dot" variant="success">.</b-badge>
+            <div class="header-btn-lg pl-4">
+                <div>
+                    <div @click="auth"><b>{{user.name || ''}} {{user.lastName || ''}}</b></div>
+                </div>
+                <b-avatar size="lg" :src="user.avatar"></b-avatar>
             </div>
-          </div>
         </div>
-        <div class="header-btn-lg pl-4">
-          <div>
-            <div><b>Vladislav Nikulin</b></div>
-            <span class="opacity-7">ТОО GSM Kazakhstan</span>
-          </div>
-          <b-avatar
-            size="lg"
-            src="	https://dev-cab.pingocean.com/img/avatar.c6deea65.png"
-          ></b-avatar>
-        </div>
-      </div>
     </b-navbar>
-    <message-list 
-    channelId='123f'
-    loadMoreBtnText='Load more'
-    />
-    <button @click="addNewStatus('edit')">add new status</button>
-  </div>
+</div>
 </template>
 
 <script>
-import { BAvatar,BNavbar,BButton,BIcon,BBadge, VBToggle } from 'bootstrap-vue'
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import {
+    BAvatar,
+    BNavbar,
+    BButton,
+    BIcon,
+    BBadge,
+    VBToggle
+} from 'bootstrap-vue'
+import {
+    FontAwesomeIcon
+} from "@fortawesome/vue-fontawesome";
+import SearchBox from '@/components/SearchBox.vue'
 
-import MessageList from '@/components/MessageList.vue'
-import { mapMutations } from "vuex";
+import {
+    mapMutations
+} from "vuex";
+import axios from 'axios';
+const baseURL = "http://localhost:3000/users";
 export default {
-  components:{ MessageList, BAvatar,BNavbar,BButton,BIcon,BBadge,FontAwesomeIcon },
-  directives: {
-  'b-toggle': VBToggle
-},
-  data(){
-    return{
-     msg:'new message', 
-      time:'',
-searchText:'',
-isSearch: true,
-    };
-  },
-  methods:{
-    ...mapMutations(['addNewStatus', 'pushItems']),
-   
-     
-      // this.$store.commit("addNewStatus", {String:"edit"})
-   
- // need delete. this for test
-    changeState(){
-this.isSearch = !this.isSearch;
-
+    components: {
+        BAvatar,
+        BNavbar,
+        BButton,
+        BIcon,
+        BBadge,
+        FontAwesomeIcon,
+        SearchBox
     },
-    // currentDateTime() {
-    //  setTimeout(() => {
-    //  this.currentDateTimes
-    //   }, 1000);
-    // }
-  },
-//   computed: {
-// currentDateTimes() {
-//     // return  this.$DateTime.local().toLocaleString(this.$DateTime.DATETIME_FULL);
-//     return  this.$DateTime.local().toLocaleString(this.$DateTime.DATETIME_FULL_WITH_SECONDS);
-//     }
-//   }
+    directives: {
+        'b-toggle': VBToggle
+    },
+    data() {
+        return {
+            msg: 'new message',
+            time: '',
+            searchText: '',
+            isSearch: true,
+            user: {
+                name: '',
+                lastName: '',
+                email: '',
+                avatar: '',
+            }
+        };
+    },
+    mounted() {
+        this.getUser()
+        //online time
+        setInterval(() => {
+            this.time = this.$DateTime.local().toFormat('yyyy LLL dd - HH:mm:ss')
+        }, 1000);
+    },
+    methods: {
+        ...mapMutations(['changeShow']),
+
+        async getUser() {
+            const res = await axios.get(baseURL);
+            const {
+                data: [user]
+            } = res;
+            this.user = user;
+        },
+        auth() {
+            this.$router.push('/FormPage')
+        },
+    },
+    watch: {
+        showSideBar(newValue) {
+            let show = document.getElementById('my-header')
+            if (newValue == true) {
+                show.style.paddingLeft = '5rem'
+            } else {
+                show.style.paddingLeft = '15rem'
+
+            }
+        },
+    },
+    computed: {
+        showSideBar() {
+            return this.$store.state.sidebar.showSideBar
+        }
+    }
 };
 </script>
 
