@@ -10,7 +10,7 @@
                 <form @submit.prevent="login">
                     <!-- Email input -->
                     <div class="form-outline mb-4">
-                        <input v-model="username" type="text" id="form3Example3" class="form-control form-control-lg" placeholder="Enter a valid email address" />
+                        <input v-model="email" type="text" id="form3Example3" class="form-control form-control-lg" placeholder="Enter a valid email address" />
                         <label class="form-label" for="form3Example3">Email address</label>
                     </div>
 
@@ -19,6 +19,7 @@
                         <input v-model="password" type="password" id="form3Example4" class="form-control form-control-lg" placeholder="Enter password" />
                         <label class="form-label" for="form3Example4">Password</label>
                     </div>
+                        <span v-if="isError" class="bg-danger">Your password or email uncorrected</span>
 
                     <div class="text-center text-lg-start mt-4 pt-2">
                         <button type="submit" class="btn btn-primary btn-lg" style="padding-left: 2.5rem; padding-right: 2.5rem;">Login</button>
@@ -36,22 +37,24 @@
 
 <script>
 import firebase from 'firebase/compat/app';
+import { mapState } from 'vuex';
 export default {
     data() {
         return {
-            username: "",
-            password: ""
+            email: "",
+            password: "",
+            isError: false
         }
     },
     methods: {
         login() {
             let email = this.email
             let password = this.password
-            this.$store.dispatch('login', {
-                    email,
-                    password
-                })
-                .then(() => this.$router.push('/'))
+             this.$store.dispatch('login', {
+                       email,
+                       password
+                   })
+                .then(() => this.$router.push('/MainPage'))
                 .catch(err => console.log(err))
         },
         loginSubmit() {
@@ -60,6 +63,19 @@ export default {
                 .catch(console.log)
             this.$router.push('/')
         }
+    },
+    watch:{
+        status(newValue,){
+            if(newValue == 'error'){
+
+                this.isError = true
+            }
+        }
+    },
+    computed:{
+        ...mapState({
+            status: state => state.loginForm.status
+        })
     }
 }
 </script>

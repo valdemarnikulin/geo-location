@@ -4,15 +4,15 @@
         <b-card ref="newTask" class="mx-3 my-4 velmld-parent shadow" shadow="lg" body-class="text-left">
             <h4 class="card-title">Task</h4>
             <b-form-group>
-                <div class="forms__intensy" style="grid-template: 1fr/1fr 1fr 1fr">
+                <div class="forms__intensy-name forms__intensy" >
                     <div>
                         <label for="nameId">Name <span class="text-danger">*</span></label>
-                        <b-form-input id="nameId" size="sm" v-model="form.message" placeholder="Enter name"></b-form-input>
+                        <b-form-input id="nameId" size="sm" v-model="form.nameTask" placeholder="Enter name"></b-form-input>
                     </div>
                 </div>
             </b-form-group>
             <b-form-group>
-                <div class="forms__intensy" style="grid-template: 1fr/1fr 1fr 1fr">
+                <div class="forms__intensy forms__intensy-name">
                     <div>
                         <label for="datepicker-placeholder">Select Date Span<span class="text-danger">*</span></label>
                         <date-picker class="w-100" :clearable="false" range type="date" appendToBody format="[on] YYYY-MM-DD" :minute-step="1" :input-attr="{required: true}" size="sm" id="datepicker-placeholder" v-model="form.datepicker.period" button-variant="secondary"></date-picker>
@@ -29,7 +29,7 @@
                 <div class="forms__intensy">
                     <div>
                         <label for="intensy">Intensity(Tasks for one user per day)<span class="text-danger">*</span></label>
-                        <b-form-input input-id="intensy" v-model="form.numberTasks" size="sm"></b-form-input>
+                        <b-form-input input-id="intensy" v-model="form.intensity" size="sm"></b-form-input>
                     </div>
                     <div>
                         <Treeselect input-id="selectDay" v-model="form.selectedDay" :options="optionsDay" :clearable="false" />
@@ -44,7 +44,7 @@
                 </div>
             </b-form-group>
             <b-form-checkbox v-model="form.showMap" toggle>Test in a certain area, in the city.</b-form-checkbox>
-            <google-maps class="mt-4" v-if="form.showMap == true" @addDataArea="addDataArea"></google-maps>
+            <google-maps id="google-map" class="mt-4" v-if="form.showMap == true" @addDataArea="addDataArea"></google-maps>
             <div class="mt-4">
                 <b-button class="mr-3" variant="primary" :disabled="false" @click="sendDatas">
                     <font-awesome-icon class="mr-1" icon="fa-solid fa-pen-to-square" />
@@ -68,26 +68,39 @@ import 'vue2-datepicker/index.css';
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 import {
+    FontAwesomeIcon
+} from "@fortawesome/vue-fontawesome";
+import {
     mapActions,
     mapMutations,
 } from "vuex";
+import {
+    BFormCheckbox,
+  BFormGroup,
+  BFormInput,
+  BButton,
+  BCard
+} from 'bootstrap-vue';
 
 export default {
     components: {
         GoogleMaps,
         Treeselect,
-        DatePicker
+        DatePicker,
+        BCard,
+        BFormGroup,
+        BFormInput,
+        FontAwesomeIcon,
+        BFormCheckbox,
+        BButton
     },
     data() {
         return {
-            showNewTask: true,
-            selectedCountry: ["f"],
-            selectedFiles: null,
-            selectedUrls: null,
-            form: {
-                message: '',
-                numberTasks: 1000,
-                areas: [],
+            showNewTask: true, ///< show block "new task"
+            form: { ///< form for  block new task
+                nameTask: '',
+                intensity: 1000,
+                areas: [], ///< Areas from the map
                 datepicker: {
                     period: []
                 },
@@ -97,7 +110,7 @@ export default {
                 selectedDay: ["a"],
                 selectedCome: ["d"],
                 selectedDayNight: ["e"],
-                showMap: false,
+                showMap: false,///< show map for drawing areas
             },
             optionsDay: [{
                     label: "Per Day",
@@ -130,8 +143,12 @@ export default {
         };
     },
     mounted() {
+        /**
+         * method take data from server
+         *  and save in local variables
+         */
         this.showOldTask()
-        //if status === add, then set time default
+        ///if status === add, then set time and date default for form
         if (this.$store.state.mapsModule.status === 'add') {
             const period = this.form.period = [
                 this.$DateTime.local()
@@ -174,14 +191,15 @@ export default {
     methods: {
         ...mapActions(["sendData", 'addNewTask', "editTask"]),
         ...mapMutations(["closeNewTask"]),
-       // get data Areas from child google maps
+       /// get data Areas from child google maps
         addDataArea(items) {
             this.areas = items;
         },
-        //if user change old task
+        
         showOldTask() {
+            ///if user change old task
             if (this.$store.state.mapsModule.status === 'edit') {
-                //set default time
+                //set default time and date for form
                 const period = this.form.period = [
                     this.$DateTime.local()
                     .set({
@@ -216,10 +234,10 @@ export default {
                         second: 59,
                     }).toJSDate()
                 ]
-                // set data from old task
+                // set local data from old task data
                 this.form = {
-                    message: this.returnData.Name,
-                    numberTasks: this.returnData.intensity,
+                    nameTask: this.returnData.Name,
+                    intensity: this.returnData.intensity,
                     areas: this.returnData.Areas,
                     datepicker: {
                         period: period,
@@ -252,36 +270,37 @@ export default {
                 .fromJSDate(this.form.timepicker.time_range[1])
                 .toLocaleString(this.$DateTime.TIME_24_WITH_SECONDS);
                 
-            const params = {
-                Name: this.form.message,
+            const params = { ///< object for send to server
+                Name: this.form.nameTask,
                 showMap: this.form.showMap,
                 date_from: date_from,
                 date_to: date_to,
                 time_from: time_from,
                 time_to: time_to,
-                intensity: this.form.numberTasks,
+                intensity: this.form.intensity,
                 Areas: this.areas,
                 selectedDayNight: this.form.selectedDayNight,
                 selectedCome: this.form.selectedCome,
                 selectedDay: this.form.selectedDay,
             }
             if (this.$store.state.mapsModule.status == 'add') {
-                await this.addNewTask(params);
+                await this.addNewTask(params); 
             } else {
                 params.id = this.form.id
                 await this.editTask(params);
             }
-            //undisable button
+            ///undisable "edit" button from component "oldTasks" 
             this.$emit('updateDisableBtn', false);
             this.closeNewTask();
         },
-        closeCurrentTask() {
+        closeCurrentTask() { ///< close block "newTask"
+        ///undisable "edit" button from component "oldTasks" 
             this.$emit('updateDisableBtn', false);
             this.closeNewTask();
         },
     },
     computed: {
-        //  return old data from vuex
+        //  return data from vuex selected task from list "oldTasks"
         returnData() {
             return this.$store.state.oldTasks.item
         }
@@ -289,6 +308,6 @@ export default {
 };
 </script>
 
-<style>
+<style lang='scss'>
 @import "../../assets/newTask.scss";
 </style>

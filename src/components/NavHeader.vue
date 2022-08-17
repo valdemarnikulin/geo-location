@@ -15,19 +15,11 @@
                         {{time}}
                     </div>
                 </div>
-                <div class="wrap__icons">
-                    <div class="wrap__usa mr-2">
-                        <img style="transform: scale(calc(0.9))" src="../assets/i.jpg" alt="usa" />
-                    </div>
-                    <div class="megaphone__badge">
-                        <b-icon class="wrap__mega" icon="megaphone" variant="success" font-scale="3"></b-icon>
-                        <b-badge class="badge-dot" variant="success">.</b-badge>
-                    </div>
-                </div>
             </div>
             <div class="header-btn-lg pl-4">
                 <div>
-                    <div @click="auth"><b>{{user.name || ''}} {{user.lastName || ''}}</b></div>
+                    <div><b>{{ user.name || 'unnamed' }} {{user.lastName || 'error'}}</b></div>
+                    <button class="nav_btn" @click="logout">log out</button>
                 </div>
                 <b-avatar size="lg" :src="user.avatar"></b-avatar>
             </div>
@@ -41,8 +33,6 @@ import {
     BAvatar,
     BNavbar,
     BButton,
-    BIcon,
-    BBadge,
     VBToggle
 } from 'bootstrap-vue'
 import {
@@ -51,17 +41,13 @@ import {
 import SearchBox from '@/components/SearchBox.vue'
 
 import {
-    mapMutations
+    mapMutations, mapState
 } from "vuex";
-import axios from 'axios';
-const baseURL = "http://localhost:3000/users";
 export default {
     components: {
         BAvatar,
         BNavbar,
         BButton,
-        BIcon,
-        BBadge,
         FontAwesomeIcon,
         SearchBox
     },
@@ -70,10 +56,10 @@ export default {
     },
     data() {
         return {
-            msg: 'new message',
+           
             time: '',
             searchText: '',
-            isSearch: true,
+            isSearch: true, ///< for visible input for search
             user: {
                 name: '',
                 lastName: '',
@@ -84,24 +70,23 @@ export default {
     },
     mounted() {
         this.getUser()
-        //online time
+        this.auth_success(this.user) /// set user in vuex 
+        ///online time
         setInterval(() => {
             this.time = this.$DateTime.local().toFormat('yyyy LLL dd - HH:mm:ss')
         }, 1000);
     },
     methods: {
-        ...mapMutations(['changeShow']),
-
-        async getUser() {
-            const res = await axios.get(baseURL);
-            const {
-                data: [user]
-            } = res;
-            this.user = user;
-        },
-        auth() {
-            this.$router.push('/FormPage')
-        },
+        ...mapMutations(['changeShow','auth_success']),
+ getUser() {
+    this.user =  JSON.parse(localStorage.getItem('user')) 
+},
+        logout() {
+            this.$store.dispatch('logout')
+                .then(() => {
+                    this.$router.push('/')
+                })
+        }
     },
     watch: {
         showSideBar(newValue) {
@@ -115,9 +100,10 @@ export default {
         },
     },
     computed: {
-        showSideBar() {
-            return this.$store.state.sidebar.showSideBar
-        }
+        ...mapState({
+            showSideBar: state=> state.sidebar.showSideBar,
+            userData: state => state.loginForm.user
+        })
     }
 };
 </script>

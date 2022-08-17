@@ -3,17 +3,17 @@
     <div class="gmaps">
         <GmapMap ref="gmap" :options="optionsMaps" :center="center" :zoom="zoom" map-type-id="terrain" style="width: 100%; height: 500px; margin-top: 10px">
         </GmapMap>
-        <GmapAutocomplete ref="address" class="autocomplete-google form-control" placeholder="Search" @place_changed="getAddressData" :selectFirstOnEnter="true" style="width: 50%"></GmapAutocomplete>
+        <GmapAutocomplete ref="address" placeholder="Search" @place_changed="getAddressData" :selectFirstOnEnter="true" />
         <b-button class="map-geolocate" variant="primary" size="sm" @click="geolocate">
             <font-awesome-icon icon="fa-solid fa-map-pin" />
         </b-button>
         <div class="btns">
             <div class="draw-area">
-                <b-button class="maps__btn btn-wide" variant="primary" size="sm" @click.prevent="drawArea">
+                <b-button id="draw-btn" class="maps__btn btn-wide" variant="primary" size="sm" @click.prevent="drawArea">
                     <font-awesome-icon icon="fa-solid fa-pencil" /> Draw area</b-button>
             </div>
             <div ref="forms" :class="{ 'overflow-forms': isResizeDiv }">
-                <b-input-group v-for="(item, i) in items" :key="i" size="sm" class="mt-3 forms-top" @mouseover="hoverPolygon(i)" @mouseleave="unHoverPolygon" novalidate>
+                <b-input-group id="inputs" v-for="(item, i) in items" :key="i" size="sm" class="mt-3 forms-top" @mouseover="hoverPolygon(i)" @mouseleave="unHoverPolygon" novalidate>
                     <b-form-input v-model="item.name" :disabled="item.isDisabledForm" @click="goToArea(item)" placeholder="Enter name area" v-on:keyup.enter="saveName(item, i)" ref="input" class="google__input" style="padding-right: 0 !important" :class="{ 'is-invalid': item.name.length > 2 ? false : true }">
                     </b-form-input>
                     <b-input-group-append>
@@ -37,19 +37,37 @@
 ></script>
 <script>
 import {
-    getGoogleMapsAPI
+    BButton,
+  BFormInput,
+  BInputGroup,
+  BInputGroupAppend,
+  BIcon
+} from 'bootstrap-vue';
+import {
+    getGoogleMapsAPI,
+   
 } from "gmap-vue";
+import { mapState } from 'vuex';
+import {
+    FontAwesomeIcon
+} from "@fortawesome/vue-fontawesome";
 export default {
     name: "GoogleMaps",
+    components:{
+BButton,
+BFormInput,
+BInputGroup,
+BInputGroupAppend, 
+BIcon,
+FontAwesomeIcon
+    },
     data() {
         return {
-            paths: [],
+            // paths: [], 
             polygons: [],
-            items: [],
-            connection: null,
-            isResizeDiv: false,
-            currentPlace: null,
-            address: "",
+            items: [], ///< array includes: names areas, areas and visibility button for edit and deleting
+            isResizeDiv: false, ///< for visible scroll where set inputs of areas
+            // address: "", 
             map: null,
             center: {
                 lat: 20,
@@ -69,21 +87,22 @@ export default {
         };
     },
     mounted() {
+        /// clear all data for add new data
         this.polygons = [];
         this.items = [];
-//check old areas
+///check old areas
         this.showOldArea();
-        //calculate geolocation if it is new task on map 
-        if (this.$store.state.mapsModule.status !== 'edit') {
+        ///calculate current geolocation user if it is new task on map 
+        if (this.MyStatus !== 'edit') {
             this.geolocate();
         }
     },
     methods: {
         
         showOldArea() {
-            if (this.$store.state.mapsModule.status == 'edit') {
-                if (this.itemArray.Areas) {
-                    Object.assign(this.items, this.itemArray.Areas)
+            if (this.MyStatus == 'edit') {
+                if (this.item.Areas) {/// if we have data from vuex
+                    this.items = [...this.items, ...this.item.Areas]
                     this.getDatas()
                     this.zoom = 12;
                     this.goToArea(this.items[0])
@@ -122,12 +141,14 @@ export default {
                 lng: findPoly.coords[0].lng
             }
         },
+        /// need refactoring function getDatas
         getDatas() {
             setTimeout(this.addPolyOnMap, 500)
         },
         saveName(item) {
             item.isDisabledForm = !item.isDisabledForm;
-            if (item.isDisabledForm) {
+            if (item.isDisabledForm) { 
+                /// add areas to array from parent component for send in common object on the server
                 this.$emit('addDataArea', this.items);
             }
         },
@@ -150,7 +171,8 @@ export default {
             removePoly[0].setMap(null);
         },
         drawFreeHand() {
-            //the polygon
+            
+            ///create polyline for drawing on the map
             let poly = new google.maps.Polyline({
                 map: this.$refs.gmap.$mapObject,
                 strokeColor: "#0e0f3e",
@@ -159,15 +181,21 @@ export default {
                 clickable: false,
             });
             poly.setMap(this.$refs.gmap.$mapObject);
-            //move-listener
+            //move-listener for drawing on the map
             const move = google.maps.event.addListener(
                 this.$refs.gmap.$mapObject,
                 "mousemove",
                 (e) => {
+                    /// add all coordinates from drawed line in array path from polyline
                     poly.getPath().push(e.latLng);
                 }
             );
-            //mouseup-listener
+            
+            /**
+             * mouseup-listener
+             * delete polyline from map and set her data paths
+             *  to create polygon
+             */
             google.maps.event.addListenerOnce(
                 this.$refs.gmap.$mapObject,
                 "mouseup",
@@ -189,7 +217,7 @@ export default {
                         this.$refs.gmap.$mapObject.getDiv(),
                         "mousedown"
                     );
-                    this.enable();
+                    this.enable(); /// enable default options of map
                     this.polygons.push(poly);
                     let coords = this.getPolygonCoords(poly);
                     this.items.push({
@@ -204,7 +232,7 @@ export default {
                 }
             );
         },
-        //get coordinates from polygon
+        ///get coordinates from polygon
         getPolygonCoords(poly) {
             let paths = poly.getPath();
             let arrayCoordinates = [];
@@ -217,14 +245,14 @@ export default {
             }
             return arrayCoordinates;
         },
-        //disable options of google maps
+        ///disable options of google maps
         disable() {
             (this.optionsMaps.draggable = false),
             (this.optionsMaps.zoomControl = false),
             (this.optionsMaps.scrollwheel = false),
             (this.optionsMaps.disableDoubleClickZoom = false);
         },
-        //enable options of goole maps
+        ///enable options of goole maps
         enable() {
             (this.optionsMaps.draggable = true),
             (this.optionsMaps.zoomControl = true),
@@ -232,9 +260,9 @@ export default {
             (this.optionsMaps.disableDoubleClickZoom = true);
         },
         drawArea() {
-            this.disable();
+            this.disable(); /// disable options of map for better drawing
             let map = this.$refs.gmap.$mapObject;
-            //set cursor crosshair
+            ///set cursor crosshair for visible what you can start draw
             map.setOptions({
                 draggableCursor: "crosshair"
             });
@@ -245,21 +273,21 @@ export default {
                     this.drawFreeHand();
                 }
             );
-            this.resizeForms();
+            this.resizeForms(); /// calculate height div in where place all inputs of name areas
         },
-            //calculate size container for inputs on map
+            ///calculate size container for inputs on map
         resizeForms() {
             let height = this.$refs.forms.clientHeight;
             if (height > 280) {
                 this.isResizeDiv = true;
             }
         },
-        //get address from input search cities, countries 
+        ///get address from input search cities, countries 
         getAddressData(addressData, placeResultData, id) {
             this.center.lat = addressData.geometry.location.lat;
             this.center.lng = addressData.geometry.location.lng;
         },
-        //calculate geolocation user
+        ///calculate current geolocation user
         geolocate() {
             navigator.geolocation.getCurrentPosition((position) => {
                 this.center = {
@@ -272,9 +300,10 @@ export default {
     },
 
     computed: {
-        itemArray() {
-            return this.$store.state.oldTasks.item
-        },
+        ...mapState({
+            MyStatus: state => state.mapsModule.status,
+            item: state => state.oldTasks.item
+        }),
         google: getGoogleMapsAPI,
     },
 };
@@ -293,9 +322,10 @@ export default {
     position: absolute;
     left: 0;
     /* margin: 10px; */
-    width: 100%;
+    width: 50%;
     border: 1px solid #000;
     border-radius: 5px;
+    margin: 10px;
 }
 @import "../assets/googleMaps.scss";
 </style>

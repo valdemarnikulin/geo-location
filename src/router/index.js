@@ -1,85 +1,93 @@
-import Vue from 'vue'
-import Router from 'vue-router'
-// import AuthorizationPage from '@/pages/AuthorizationPage.vue'
-// import RegistrationPage from '@/pages/RegistrationPage.vue'
+import Vue from "vue";
+import Router from "vue-router";
+import store from "@/store/index.js";
 
-import store from '@/store/index.js'
-// import IndexForm from '@/pages/IndexForm.vue'
-// import CheckSecure from '@/components/CheckSecure.vue'
-// import OldTasks from '@/components/Tasks/OldTasks.vue'
-
-Vue.use(Router)
+Vue.use(Router);
 
 let router = new Router({
-    mode: 'history',
-    routes: [
-      {
-           path: '/login', 
-           meta:{
-               searchable: true,
-               name:'Login'
-           },
-      component: ()=> import('@/pages/AuthorizationPage.vue'),
-    name:'login' 
-},
-      { 
-          path: '/registration', 
-          meta:{
-            searchable: true,
-            name:'Registration'
-        },
-        component: ()=> import('@/pages/RegistrationPage.vue'),
-    name:'registration'
+  mode: "history",
+  routes: [
+    {
+      path: "/",
+      name: "indexForm",
+      meta: {
+        searchable: true,
+        // name: "Enter",
+        layout: "indexForm",
+      },
+      component: () => import("@/pages/IndexForm.vue"),
     },
-      {
-        path: '/secure',
-        name: 'CheckSecure',
-        meta: { 
-          requiresAuth: true
-        },
-        component: ()=> import('@/components/CheckSecure.vue')
-
+    {
+      path: "/login",
+      meta: {
+        searchable: true,
+        name: "Login",
+        layout: "main",
       },
-      {
-        path: '/FormPage',
-        name: 'IndexForm',
-        meta:{
-            searchable: true,
-            name:'Enter'
-        },
-        component: ()=> import('@/pages/IndexForm.vue')
+      component: () => import("@/pages/AuthorizationPage.vue"),
+      name: "login",
+    },
+    {
+      path: "/registration",
+      meta: {
+        searchable: true,
+        name: "Registration",
+        layout: "RegistrationPage",
       },
-      {
-        path: '/OldTasks',
-        name: 'OldTasks',
-        meta:{
-            searchable: true,
-            name:'Old Tasks'
-        },
-        component: ()=> import('@/components/Tasks/OldTasks.vue')
+      component: () => import("@/pages/RegistrationPage.vue"),
+      name: "registration",
+    },
+    {
+      path: "/OldTasks",
+      name: "OldTasks",
+      meta: {
+        requiresAuth: true,
+        searchable: true,
+        name: "Old Tasks",
+        layout: "OldTasks",
       },
-      {
-        path: '/NotFound',
-        name: 'Not Found',
-        meta:{
-            searchable: false,
-        },
-        component: ()=> import('@/pages/NotFound.vue')
-      }
-    ]
-})
+      component: () => import("@/components/Tasks/OldTasks.vue"),
+    },
+    {
+      path: "*",
+      name: "Not Found",
+      meta: {
+        searchable: false,
+        layout: "NotFound",
+      },
+      component: () => import("@/pages/NotFound.vue"),
+    },
+    {
+      path: "/MainPage",
+      name: "Main page",
+      meta: {
+        searchable: true,
+        layout: "MainPage",
+        requiresAuth: true,
+      },
+      component: () => import("@/pages/MainPage.vue"),
+    },
+  ],
+});
 router.beforeEach((to, from, next) => {
-    if(to.matched.some(record => record.meta.requiresAuth)) {
-      if (store.getters.isLoggedIn) {
-        next()
-        return
-      }
-      next('/login') 
-    } else {
-      next() 
+  const user = localStorage.getItem("user");
+  if (
+    to.matched.some((record) => {
+      record.meta.requiresAuth;
+    })
+  ) {
+    if (store.state.loginForm.status == "success") {
+      console.log("success no redirection");
+      next();
+      return;
     }
-  })
-export default router
+    if (!user) {
+      console.log("!user");
 
-
-
+      next("/login");
+    }
+  } else {
+    next();
+  }
+});
+export default router;

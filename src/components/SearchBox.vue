@@ -20,7 +20,6 @@
                 </div>
                 <template v-if="request">
                     <div v-if="loading">
-                        qwe
                     </div>
                     <b-card class="search-list">
                         <template v-if="results.length">

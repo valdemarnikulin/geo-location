@@ -27,7 +27,7 @@ describe("OldTasks.vue testing", () => {
     expect(methods.updateDisableBtn).toBeCalled();
   });
   it('dispatches "actionInput" when input event value is "input"', async () => {
-    const wrapper = shallowMount(OldTasks, { store, localVue });
+    const wrapper = shallowMount(OldTasks, { store });
 
     const button = wrapper.find("button");
     await button.trigger("click");

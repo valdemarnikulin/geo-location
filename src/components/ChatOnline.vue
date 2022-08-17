@@ -1,6 +1,6 @@
 <template>
 <div>
-    <div @click="changeOpen" class="circle-wrapper">
+    <div @click="changeOpen" class="circle-wrapper bg-success">
         <div class="circle-my">
             <font-awesome-icon icon="fa-solid fa-comments" style="z-index: 100; color: #fff" />
         </div>
@@ -61,7 +61,7 @@ export default {
     },
     data() {
         return {
-            isOpen: false,
+            isOpen: false, ///< show pop-up window with chat
             user: firebase.auth().currentUser,
             message: '',
             messages: [],
@@ -69,7 +69,7 @@ export default {
         }
     },
     methods: {
-        //change state button chat
+        //change visibility pop-up chat
         changeOpen() {
             this.isOpen = !this.isOpen
         },
@@ -97,60 +97,5 @@ export default {
 </script>
 
 <style>
-#chat2 .form-control {
-    border-color: transparent;
-}
-
-#chat2 .form-control:focus {
-    border-color: transparent;
-    box-shadow: inset 0px 0px 0px 1px transparent;
-}
-
-.divider:after,
-.divider:before {
-    content: "";
-    flex: 1;
-    height: 1px;
-    background: #eee;
-}
-
-.card-footer {
-    gap: 10px;
-}
-
-.chat-window {
-    position: fixed;
-    z-index: 50;
-    width: 60%;
-    right: 0px;
-    bottom: 0;
-    overflow: hidden;
-    transform: translate(23%, 5%);
-}
-
-.circle-wrapper {
-    position: fixed;
-    cursor: pointer;
-    bottom: 30px;
-    right: 30px;
-    z-index: 50;
-}
-
-.circle-my {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 1.5rem;
-    width: 54px;
-    height: 54px;
-    border-radius: 50%;
-    background-color: #0e0f3e;
-    z-index: 51;
-}
-
-.button-send {
-    border: none;
-    /* color: blue; */
-    background: none;
-}
+@import "../assets/chatOnline.scss";
 </style>

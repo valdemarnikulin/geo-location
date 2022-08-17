@@ -42,8 +42,17 @@
                                             <input v-model="password_confirmation" required type="password" id="form3Example4cd" class="form-control" />
                                             <label class="form-label" for="form3Example4cd">Repeat your password</label>
                                         </div>
+                                        
                                         <div v-if="nonCorrect" style="color:red">Your passwords don't </div>
                                     </div>
+                                    <div class="d-flex flex-row align-items-center mb-4">
+                                        <i class="fas fa-key fa-lg me-3 fa-fw"></i>
+
+                                            <div class="form-outline flex-fill mb-0">
+                                                <input required type="text" id="image" v-model="avatar" class="form-control" />
+                                                <label class="form-label" for="form3Example4cd">Add link for Photo</label>
+                                            </div>
+                                        </div>
                                     <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
                                         <button type="submit" @click="registration" class="btn btn-primary btn-lg">Register</button>
                                     </div>
@@ -77,6 +86,7 @@ export default {
             email: "",
             password: "",
             password_confirmation: "",
+            avatar:'',
             is_admin: null,
             nonCorrect: false
         }
@@ -89,14 +99,13 @@ export default {
                 this.nonCorrect = true
                 return
             }
-            let data = {
+            
+            this.register({   
                 name: this.name,
                 email: this.email,
                 password: this.password,
-                is_admin: this.is_admin
-            }
-            this.register({
-                    data
+                is_admin: this.is_admin,
+                avatar: this.avatar,
                 })
                 .then(() => this.$router.push('/'))
                 .catch(err => console.log(err))

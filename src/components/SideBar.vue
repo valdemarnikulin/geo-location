@@ -1,8 +1,8 @@
 <template>
 <div class="wrapper">
-    <div id="my-sidebar" class="my-sidebar">
+    <div id="my-sidebar" class="my-sidebar bg-primary">
         <div style="display: flex; justify-content: center" class="my-4 logo">
-            <b-img class="sidebar-links-change" style="width: 200px; height: 23px" src="https://dev-cab.pingocean.com/img/logo.d9ee8fef.svg"></b-img>
+            <b-img class="sidebar-links-change" style="width: 200px;" src="https://graphicsfamily.com/wp-content/uploads/edd/2021/07/Free-Car-Logo-Design-Source-PNG-Transparent.png"></b-img>
         </div>
         <div class="p-3">
             <div class="mb-3">
@@ -29,7 +29,7 @@
                     </li>
                     <li class="nav__link">
                         <div>
-                            <router-link class="sidebar-links" to="/FormPage">
+                            <router-link class="sidebar-links" to="/">
                                 <b-icon font-scale="1.5" icon="wallet" class="mr-2">
                                 </b-icon>
                                 <div class="sidebar-links-change">
@@ -55,6 +55,7 @@ export default {
 
     },
     watch: {
+        ///set width block when block is open or not
         showSideBar(newValue,) {
             let textLinks = document.getElementsByClassName('sidebar-links-change')
             let sidebar = document.getElementById('my-sidebar')
@@ -86,8 +87,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "../assets/custom.scss";
-
 a {
     color: white !important;
     font-size: 0.94rem;
@@ -102,7 +101,7 @@ ul {
 }
 
 .logo {
-    min-height: 23px;
+    min-height: 105px;
 }
 
 .vertical {
@@ -140,7 +139,7 @@ ul {
     left: 0;
     height: 100vh;
     z-index: 999;
-    background: #0e0f3e;
+    
     color: #fff;
     transition: width 1s;
 }

@@ -1,50 +1,32 @@
-// switch checkbox
-<template>
-<div class="col my-header py-3">
 
-    <div class="main-header mx-4 my-4">
-        <div class="main-header-left">
-            <ul class="nav custom-nav nav-pills">
-                <li class="nav-item" style="font-size: 0.9rem">
-                    <a href="#" class="nav-link router-link-exact-active task__link">
-                        <b>TASKS</b>
-                    </a>
-                </li>
-            </ul>
-        </div>
-        <div class="main-header-right">
-            <h5 class="mb-1">Tasks</h5>
-            <div class="opacity-7 text-right">Data Testing</div>
+<template>
+<div class="tasks col my-header py-3">
+
+    <div class="tasks__main-header mx-4 my-4">
+        <div class="tasks__main-header-left">
         </div>
     </div>
     <b-card class="mx-3 my-4 velmld-parent shadow">
         <div class="tasks__head">
-            <div style="
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-          ">
-                <div style="display: flex; align-items: center; gap: 10px">
-                    <div class="tasks__icon">
-                        <b-icon icon="check-circle" style="border-radius: 0.25rem" font-scale="5" class="blue-side p-3 border" variant="light"></b-icon>
+            <div 
+          class="tasks__head-items"
+          >
+                <div class="tasks__head-left">
+                    <div class="tasks__icon bg-primary">
+                        <b-icon icon="check-circle" font-scale="5" class="blue-side p-3 border" variant="light"></b-icon>
                     </div>
                     <div>
                         <h4>Tasks</h4>
-                        <div>Data testing</div>
                     </div>
                 </div>
                 <div>
-                    <b-button v-scroll-to="'#newTask'" style="padding: 0.375rem 1.5rem" class="m-1 shadow" size="sm" variant="primary" @click="scrollToNewTask" :disabled="this.$store.state.taskModule.isNewTask">
+                    <b-button v-scroll-to="'#newTask'" id='btn-new' class="m-1 shadow tasks__btn" size="sm" variant="primary" @click="scrollToNewTask" :disabled="this.$store.state.taskModule.isNewTask">
                         <b-icon icon="plus" class="opacity-7 pr-2" scale="3" />
                         New
                     </b-button>
                 </div>
             </div>
-            <div class="opacity-7 pt-4" style="font-size: 0.94rem">
-                <p>
-                    In this section you can create tasks for making calls to your
-                    network.
-                </p>
+            <div class="opacity-7 pt-4 tasks__text">
                 <p>
                     Lorem, ipsum dolor sit amet consectetur adipisicing elit.
                      Error repellendus ipsa veritatis corrupti doloremque, nemo quidem qui repudiandae esse perspiciatis facilis nesciunt, 
@@ -59,11 +41,7 @@
         </div>
         <b-table responsive="sm" :items="itemsOfOldTasks" :fields="fields">
             <template #cell(Status)="{ item }">
-                <span class="badge badge-primary align-text-bottom ml-1" style="
-              background: transparent;
-              border: 1px solid rgb(14, 15, 62);
-              color: rgb(14, 15, 62);
-            ">
+                <span class="badge badge-primary tasks__badge align-text-bottom ml-1">
                     {{ item.new }}NEW
                 </span>
             </template>
@@ -84,51 +62,74 @@
                     <font-awesome-icon icon="fa-solid fa-pen-to-square" />
                 </b-button>
 
-                <b-button class="border-none icon-red" size="sm" variant="danger" @click="deleteItem(item)">
+                <b-button class="border-none tasks__icon-red" size="sm" variant="danger" @click="deleteItem(item)">
                     <font-awesome-icon icon="fa-solid fa-trash-can" />
                 </b-button>
             </template>
         </b-table>
     </b-card>
-    <new-task v-if="this.$store.state.taskModule.isNewTask == true" id="newTask" @updateDisableBtn="updateDisableBtn" />
+    <div id="newTask">
+
+        <new-task v-if="isNewTask == true"  @updateDisableBtn="updateDisableBtn" />
+    </div>
 </div>
 </template>
 
 <script>
 import {
     mapMutations,
-    mapActions
+    mapActions,
+    mapState
 } from "vuex";
-import NewTask from "./NewTask.vue"
+import NewTask from "./NewTask.vue";
+import {
+    FontAwesomeIcon
+} from "@fortawesome/vue-fontawesome";
+import {
+  BTable,
+  BButton,
+  BCard,
+  BIcon
+} from 'bootstrap-vue';
+
 export default {
     components: {
-        NewTask
+        NewTask,
+        BCard,
+        BIcon,
+        BButton,
+        BTable,
+        FontAwesomeIcon
     },
 
     data() {
         return {
-            fields: [
+            fields: [///< Array from names for topic table
                 "Name",
                 "Area_from_map",
                 "intensity",
                 "Actions",
             ],
-            itemsOfOldTasks: [],
-            disableBtn: false
+            itemsOfOldTasks: [], ///< array all tasks
+            disableBtn: false 
         };
     },
-    async beforeMount() {
-        //load all tasks from server
-        await this.getAllData();
+  async  beforeMount() {
+        //load all tasks from server, function from vuex => oldTasks
+      await this.getAllData();
+      /// set data in local data
         this.itemsOfOldTasks = this.returnData;
     },
     methods: {
         ...mapMutations(["showNewTask", "addNewStatus"]),
         ...mapActions([ "getAllData", "deleteTask", "getCurrentTask"]),
 
-        async updateDisableBtn(value) {
+ /// toggle visible or unvisible button "edit task"
+ 
+    async updateDisableBtn(value) {
             this.disableBtn = value;
-            await this.getAllData();
+            ///refresh and rerender list of all tasks, function from vuex => oldTasks
+      await this.getAllData();
             this.itemsOfOldTasks = this.returnData;
         },
         scrollToNewTask() {
@@ -137,6 +138,7 @@ export default {
         },
         //edit task, find on id
         async editItem(item) {
+            /// disable buttons edit
             this.disableBtn = true
             this.addNewStatus('edit');
             await this.getCurrentTask(item)
@@ -144,18 +146,17 @@ export default {
         },
         async deleteItem(item) {
             await this.deleteTask(item);
-            let findItem = this.itemsOfOldTasks.findIndex(el => el.id == item.id)
-            this.itemsOfOldTasks.splice(findItem, 1);
         },
     },
     computed: {
-        returnData() {
-            return this.$store.state.oldTasks.oldTasks;
-        }
+        ...mapState({
+            returnData: state => state.oldTasks.oldTasks,
+            isNewTask: state => state.taskModule.isNewTask
+        })
     },
 };
 </script>
 
-<style>
+<style lang="scss">
 @import "../../assets/oldTask.scss";
 </style>

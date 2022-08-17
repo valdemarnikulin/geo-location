@@ -1,7 +1,7 @@
 <template>
-<div>
+<div class="index-form vh-100">
     <div id="nav">
-        <ul class=" col-md-6 d-flex justify-content-center mx-auto nav nav-pills nav-justified mb-3" id="ex1" role="tablist">
+        <ul class="d-flex justify-content-center mx-auto nav nav-pills nav-justified" id="ex1" role="tablist">
             <li class="nav-item" role="presentation">
                 <router-link to="/login" class="nav-link active" id="tab-login" data-mdb-toggle="pill" role="tab" aria-controls="pills-login" aria-selected="true">Login</router-link>
             </li>
@@ -9,12 +9,12 @@
                 <router-link to="/registration" class="nav-link" id="tab-register" data-mdb-toggle="pill" role="tab" aria-controls="pills-register" aria-selected="false">Register</router-link>
             </li>
         </ul>
-        <span v-if="isLoggedIn"> | <a @click="logout">Logout</a></span>
     </div>
 </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 export default {
     created: function () {
         this.axios.interceptors.response.use(undefined, function (err) {
@@ -26,18 +26,28 @@ export default {
             });
         });
     },
-    computed: {
-        isLoggedIn() {
-            return this.$store.getters.isLoggedIn
+    data() {
+        return {
+            file: '',
         }
     },
+    computed: {
+        ...mapGetters({
+            isLoggedIn: getters => getters.isLoggedIn
+        })
+        // isLoggedIn() {
+        //     return this.$store.getters.isLoggedIn
+        // }
+    },
     methods: {
-        logout() {
-            this.$store.dispatch('logout')
-                .then(() => {
-                    this.$router.push('/login')
-                })
-        }
+        
     },
 }
 </script>
+<style>
+.index-form{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+</style>
