@@ -1,10 +1,10 @@
 <template>
 <div>
     <div class="gmaps">
-        <GmapMap ref="gmap" :options="optionsMaps" :center="center" :zoom="zoom" map-type-id="terrain" style="width: 100%; height: 500px; margin-top: 10px">
+        <GmapMap id="gmap" ref="gmap" :options="optionsMaps" :center="center" :zoom="zoom" map-type-id="terrain" style="width: 100%; height: 500px; margin-top: 10px">
         </GmapMap>
-        <GmapAutocomplete ref="address" placeholder="Search" @place_changed="getAddressData" :selectFirstOnEnter="true" />
-        <b-button class="map-geolocate" variant="primary" size="sm" @click="geolocate">
+        <GmapAutocomplete id="input_maps" ref="address" placeholder="Search" @place_changed="getAddressData" :selectFirstOnEnter="true" />
+        <b-button id="geo-locate" class="map-geolocate" variant="primary" size="sm" @click="geolocate">
             <font-awesome-icon icon="fa-solid fa-map-pin" />
         </b-button>
         <div class="btns">
@@ -13,14 +13,14 @@
                     <font-awesome-icon icon="fa-solid fa-pencil" /> Draw area</b-button>
             </div>
             <div ref="forms" :class="{ 'overflow-forms': isResizeDiv }">
-                <b-input-group id="inputs" v-for="(item, i) in items" :key="i" size="sm" class="mt-3 forms-top" @mouseover="hoverPolygon(i)" @mouseleave="unHoverPolygon" novalidate>
+                <b-input-group id="inputs" v-for="(item, i) in items" :key="i" size="sm" class="mt-3 inputs-areas forms-top" @mouseover="hoverPolygon(i)" @mouseleave="unHoverPolygon" novalidate>
                     <b-form-input v-model="item.name" :disabled="item.isDisabledForm" @click="goToArea(item)" placeholder="Enter name area" v-on:keyup.enter="saveName(item, i)" ref="input" class="google__input" style="padding-right: 0 !important" :class="{ 'is-invalid': item.name.length > 2 ? false : true }">
                     </b-form-input>
                     <b-input-group-append>
-                        <b-button size="sm" :variant="item.isDisabledForm ? '' : 'success'" @click="saveName(item, i)" :disabled="item.name.length <= 2">
+                        <b-button id="save_area" size="sm" :variant="item.isDisabledForm ? '' : 'success'" @click="saveName(item, i)" :disabled="item.name.length <= 2">
                             <b-icon :icon="item.isDisabledForm ? 'pencil-square' : 'check2'"></b-icon>
                         </b-button>
-                        <b-button size="sm" variant="danger" @click="delAreaOfIndex(i)">
+                        <b-button id="delete_area" size="sm" variant="danger" @click="delAreaOfIndex(i)">
                             <b-icon icon="x"></b-icon>
                         </b-button>
                     </b-input-group-append>

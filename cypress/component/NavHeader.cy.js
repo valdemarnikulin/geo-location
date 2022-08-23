@@ -1,8 +1,18 @@
 import NavHeader from "@/components/NavHeader";
-describe("GoogleMaps.cy.js", () => {
-  it("my unit test", () => {
-    // Arrange
-    cy.mount(NavHeader);
-    // Assert
+import store from "@/store/index";
+
+describe("NavHeader.cy.js", () => {
+  beforeEach(() => {
+    cy.mount(NavHeader, {
+      store,
+    });
+  });
+  const avatar = ".b-avatar";
+  const userName = "#user-name>b";
+
+  it("visible elements", () => {
+    cy.get(avatar).should("be.visible");
+    cy.get(userName).should("be.visible");
+    cy.get(userName).should("have.text", "no name");
   });
 });

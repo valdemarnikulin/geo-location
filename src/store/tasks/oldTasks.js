@@ -1,6 +1,6 @@
 import axios from "axios";
 import store from "..";
-const baseURL = "http://localhost:3000/users";
+const baseURL = "http://localhost:3000/tasks";
 
 export default {
   state: {
@@ -24,22 +24,22 @@ export default {
 
   actions: {
     async editTask(state, payload) {
+      let user = store.state.loginForm.user;
+      payload.userEmail = user.email;
       await axios
         .put(`${baseURL}/${payload.id}`, payload)
         .then(() => {
-          console.log("SUCCESS!!");
+          console.log("SUCCESS from edit task!!");
         })
         .catch((err) => {
           console.log(err);
         });
     },
     async addNewTask(state, payload) {
-      const user = store.state.loginForm.user;
-      console.log("🚀 ~ file: oldTasks.js ~ line 38 ~ addNewTask ~ user", user);
+      let user = store.state.loginForm.user;
+      payload.userEmail = user.email;
       await axios
-        // .post(`${baseURL}/${user}/${user.tasks}`, payload)
-        .post(`${baseURL}?tasks=${user.tasks}`, payload)
-
+        .post(baseURL, payload)
         .then(() => {
           console.log("SUCCESS!!");
         })
@@ -48,8 +48,10 @@ export default {
         });
     },
     async getAllData(state) {
+      let user = store.state.loginForm.user;
+
       await axios
-        .get(baseURL)
+        .get(`${baseURL}?userEmail=${user.email}`)
         .then((res) => {
           const { data } = res;
           state.state.oldTasks = [...data];
@@ -62,12 +64,11 @@ export default {
     async getCurrentTask(state, payload) {
       state.state.item = [];
       await axios
-        .get(baseURL)
+        .get(`${baseURL}/${payload.id}`, payload)
         .then((res) => {
           const { data } = res;
-          let findObj = data.find((el) => el.id === payload.id);
-          state.state.item = findObj;
-          console.log("SUCCESS!!");
+          state.state.item = data;
+          console.log("SUCCESS from get current task!!");
         })
         .catch((err) => {
           console.log(err);

@@ -27,12 +27,12 @@
                                     <p class="small p-2 me-3 mb-1 text-white rounded-3 bg-primary">{{ msg.text }}</p>
                                     <p class="small ms-3 mb-3 rounded-3 text-muted">{{msg.createdAt}}</p>
                                 </div>
-                                <img class="rounded-circle" :src="msg.photoURL" :alt="msg.displayName" style="width: 45px; height: 100%;">
+                                <img class="rounded-circle" :src="msg.avatar" :alt="msg.displayName" style="width: 45px; height: 45px;">
                             </div>
                             <div ref="scrollable"></div>
                         </div>
                         <form @submit.prevent="sendMessage" class="card-footer text-muted d-flex justify-content-start align-items-center p-3">
-                            <img class="rounded-circle" :src="user.photoURL" :alt="user.displayName" style="width: 45px; height: 100%;">
+                            <img class="rounded-circle" :src="user.avatar" :alt="user.displayName" style="width: 55px; height: 45px;">
 
                             <input v-model="message" type="text" class="form-control form-control-lg" id="exampleFormControlInput1" placeholder="Type message">
                             <button :disabled="!message" type="submit" class="button-send">
@@ -51,6 +51,7 @@
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
+import { mapState } from 'vuex';
 
 export default {
     mounted() {
@@ -62,10 +63,12 @@ export default {
     data() {
         return {
             isOpen: false, ///< show pop-up window with chat
-            user: firebase.auth().currentUser,
+            // user: firebase.auth().currentUser,
+            // user: null,
             message: '',
             messages: [],
             db: firebase.firestore()
+            
         }
     },
     methods: {
@@ -78,9 +81,9 @@ export default {
         },
         async sendMessage() {
             const messageInfo = {
-                'userUID': this.user.uid,
-                'displayName': this.user.displayName,
-                'photoURL': this.user.photoURL,
+                // 'userUID': this.user.uid,
+                'name': this.user.name,
+                'avatar': this.user.avatar,
                 'text': this.message,
                 'createdAt': this.$DateTime.local().toFormat('HH:mm:ss')
             }
@@ -91,6 +94,11 @@ export default {
             })
             await this.db.collection('messages').add(messageInfo)
         }
+    },
+    computed:{
+        ...mapState({
+            user: state => state.loginForm.user
+        })
     }
 
 }

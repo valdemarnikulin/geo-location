@@ -2,7 +2,7 @@
 <div id="my-header" class="my-navbar">
     <b-navbar class="navbar-shadow pr-4" toggleable="lg" type="dark" variant="white">
         <div class="navbar__left">
-            <b-button @click="changeShow" class="mr-2 sidebar-toggle opacity-5">
+            <b-button @click="CHANGE_SHOW" class="mr-2 sidebar-toggle opacity-5">
                 <font-awesome-icon style="width: 20px; height: 20px" icon="fa-solid fa-bars" />
             </b-button>
             <search-box></search-box>
@@ -18,10 +18,10 @@
             </div>
             <div class="header-btn-lg pl-4">
                 <div>
-                    <div><b>{{ user.name || 'unnamed' }} {{user.lastName || 'error'}}</b></div>
+                    <div id="user-name"><b>{{ userData.name || 'no name' }}</b></div>
                     <button class="nav_btn" @click="logout">log out</button>
                 </div>
-                <b-avatar size="lg" :src="user.avatar"></b-avatar>
+                <b-avatar id="avatar" size="lg" :src="userData.avatar"></b-avatar>
             </div>
         </div>
     </b-navbar>
@@ -69,20 +69,17 @@ export default {
         };
     },
     mounted() {
-        this.getUser()
-        this.auth_success(this.user) /// set user in vuex 
+     
         ///online time
         setInterval(() => {
             this.time = this.$DateTime.local().toFormat('yyyy LLL dd - HH:mm:ss')
         }, 1000);
     },
     methods: {
-        ...mapMutations(['changeShow','auth_success']),
- getUser() {
-    this.user =  JSON.parse(localStorage.getItem('user')) 
-},
+        ...mapMutations(['CHANGE_SHOW']),
+
         logout() {
-            this.$store.dispatch('logout')
+            this.$store.dispatch('LOGOUT')
                 .then(() => {
                     this.$router.push('/')
                 })

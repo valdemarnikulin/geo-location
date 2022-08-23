@@ -10,14 +10,14 @@
                 <form @submit.prevent="login">
                     <!-- Email input -->
                     <div class="form-outline mb-4">
-                        <input v-model="email" type="text" id="form3Example3" class="form-control form-control-lg" placeholder="Enter a valid email address" />
-                        <label class="form-label" for="form3Example3">Email address</label>
+                        <input v-model="email" type="text" id="email" class="form-control form-control-lg" placeholder="Enter a valid email address" />
+                        <label class="form-label" for="email">Email address</label>
                     </div>
 
                     <!-- Password input -->
                     <div class="form-outline mb-3">
-                        <input v-model="password" type="password" id="form3Example4" class="form-control form-control-lg" placeholder="Enter password" />
-                        <label class="form-label" for="form3Example4">Password</label>
+                        <input v-model="password" type="password" id="password" class="form-control form-control-lg" placeholder="Enter password" />
+                        <label class="form-label" for="password">Password</label>
                     </div>
                         <span v-if="isError" class="bg-danger">Your password or email uncorrected</span>
 
@@ -28,7 +28,7 @@
                     </div>
 
                 </form>
-                <button class="btn btn-primary btn-lg" @click="loginSubmit">Login with Google!</button>
+                <button class="btn btn-primary btn-lg" id="btn-submit" @click="loginSubmit">Login with Google!</button>
             </div>
         </div>
     </div>

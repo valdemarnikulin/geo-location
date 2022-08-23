@@ -73,6 +73,7 @@ import {
 import {
     mapActions,
     mapMutations,
+    mapState,
 } from "vuex";
 import {
     BFormCheckbox,
@@ -190,7 +191,7 @@ export default {
     },
     methods: {
         ...mapActions(["sendData", 'addNewTask', "editTask"]),
-        ...mapMutations(["closeNewTask"]),
+        ...mapMutations(["CLOSE_NEW_TASK"]),
        /// get data Areas from child google maps
         addDataArea(items) {
             this.areas = items;
@@ -291,19 +292,20 @@ export default {
             }
             ///undisable "edit" button from component "oldTasks" 
             this.$emit('updateDisableBtn', false);
-            this.closeNewTask();
+            this.CLOSE_NEW_TASK();
         },
         closeCurrentTask() { ///< close block "newTask"
         ///undisable "edit" button from component "oldTasks" 
             this.$emit('updateDisableBtn', false);
-            this.closeNewTask();
+            this.CLOSE_NEW_TASK();
         },
     },
     computed: {
         //  return data from vuex selected task from list "oldTasks"
-        returnData() {
-            return this.$store.state.oldTasks.item
-        }
+        ...mapState({
+            returnData: state => state.oldTasks.item
+        })
+        
     },
 };
 </script>

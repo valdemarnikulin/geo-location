@@ -7,10 +7,22 @@
 </template>
 
 <script>
+import { mapMutations } from 'vuex';
 
 
 export default {
   name: "App",
+  mounted(){
+    this.getUser()
+  },
+  methods:{
+      ...mapMutations(['AUTH_SUCCESS']),
+getUser(){
+let user =  JSON.parse(localStorage.getItem('user')) 
+this.AUTH_SUCCESS(user)/// set user in vuex 
+
+}
+  },
   computed:{
         layout(){
             return (this.$route.meta.layout)

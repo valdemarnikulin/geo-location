@@ -18,16 +18,16 @@ import "./commands";
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
-import firebase from "firebase/app";
-import "firebase/auth";
-import "firebase/database";
-import "firebase/firestore";
-import { attachCustomCommands } from "cypress-firebase";
+// import firebase from "firebase/app";
+// import "firebase/auth";
+// import "firebase/database";
+// import "firebase/firestore";
+// import { attachCustomCommands } from "cypress-firebase";
 
-const fbConfig = {
-  // Your config from Firebase Console
-};
+// const fbConfig = {
+// Your config from Firebase Console
+// };
 
-firebase.initializeApp(fbConfig);
+// firebase.initializeApp(fbConfig);
 
-attachCustomCommands({ Cypress, cy, firebase });
+// attachCustomCommands({ Cypress, cy, firebase });

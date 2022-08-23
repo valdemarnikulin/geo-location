@@ -121,7 +121,7 @@ export default {
         this.itemsOfOldTasks = this.returnData;
     },
     methods: {
-        ...mapMutations(["showNewTask", "addNewStatus"]),
+        ...mapMutations(["SHOW_NEW_TASK", "ADD_NEW_STATUS"]),
         ...mapActions([ "getAllData", "deleteTask", "getCurrentTask"]),
 
  /// toggle visible or unvisible button "edit task"
@@ -133,16 +133,16 @@ export default {
             this.itemsOfOldTasks = this.returnData;
         },
         scrollToNewTask() {
-            this.showNewTask();
-            this.addNewStatus('add');
+            this.SHOW_NEW_TASK(); 
+            this.ADD_NEW_STATUS('add');
         },
         //edit task, find on id
         async editItem(item) {
             /// disable buttons edit
             this.disableBtn = true
-            this.addNewStatus('edit');
+            this.ADD_NEW_STATUS('edit');
             await this.getCurrentTask(item)
-            this.showNewTask();
+            this.SHOW_NEW_TASK();
         },
         async deleteItem(item) {
             await this.deleteTask(item);

@@ -1,10 +1,10 @@
 export default {
-    state:{
-        showSideBar: false
+  state: {
+    showSideBar: false,
+  },
+  mutations: {
+    CHANGE_SHOW(state) {
+      state.showSideBar = !state.showSideBar;
     },
-    mutations:{
-        changeShow(state){
-state.showSideBar = !state.showSideBar
-        }
-    }
-}
+  },
+};

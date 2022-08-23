@@ -1,14 +1,14 @@
 export default {
-    state:{
-        isNewTask: false,
+  state: {
+    isNewTask: false,
+  },
+  getters: {},
+  mutations: {
+    SHOW_NEW_TASK(state) {
+      state.isNewTask = true;
     },
-    getters: {},
-    mutations: {
-showNewTask(state) {
-state.isNewTask = true;
-},
-closeNewTask(state) {
-    state.isNewTask = false;
-},
+    CLOSE_NEW_TASK(state) {
+      state.isNewTask = false;
     },
-}
+  },
+};
