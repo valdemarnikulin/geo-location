@@ -8,20 +8,31 @@
 
 <script>
 import { mapMutations } from 'vuex';
+import axios from 'axios'
 
 
 export default {
   name: "App",
+  created () {
+    axios.interceptors.response.use(undefined, (err) =>  {
+      return new Promise( () => {
+        if (err.status === 401 && err.config && !err.config.__isRetryRequest) {
+          this.$store.dispatch("logout")
+        }
+        throw err;
+      });
+    });
+  },
   mounted(){
-    this.getUser()
+    // this.getUser()
   },
   methods:{
       ...mapMutations(['AUTH_SUCCESS']),
-getUser(){
-let user =  JSON.parse(localStorage.getItem('user')) 
-this.AUTH_SUCCESS(user)/// set user in vuex 
+// getUser(){
+// let user =  JSON.parse(localStorage.getItem('user')) 
+// this.AUTH_SUCCESS(user)/// set user in vuex 
 
-}
+// }
   },
   computed:{
         layout(){

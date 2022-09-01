@@ -48,26 +48,17 @@
 </template>
 
 <script>
-import firebase from 'firebase/compat/app';
-import 'firebase/compat/auth';
-import 'firebase/compat/firestore';
 import { mapState } from 'vuex';
 
 export default {
     mounted() {
-        this.db.collection('messages').orderBy('createdAt')
-            .onSnapshot(querySnap => {
-                this.messages = querySnap.docs.map(doc => doc.data())
-            })
     },
     data() {
         return {
             isOpen: false, ///< show pop-up window with chat
-            // user: firebase.auth().currentUser,
-            // user: null,
             message: '',
             messages: [],
-            db: firebase.firestore()
+            db:[]
             
         }
     },

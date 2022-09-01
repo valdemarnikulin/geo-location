@@ -69,23 +69,34 @@ let router = new Router({
     },
   ],
 });
+// router.beforeEach((to, from, next) => {
+//   const user = localStorage.getItem("user");
+//   if (
+//     to.matched.some((record) => {
+//       record.meta.requiresAuth;
+//     })
+//   ) {
+//     if (store.state.loginForm.status == "success") {
+//       console.log("success no redirection");
+//       next();
+//       return;
+//     }
+//     if (!user) {
+//       console.log("!user");
+
+//       next("/login");
+//     }
+//   } else {
+//     next();
+//   }
+// });
 router.beforeEach((to, from, next) => {
-  const user = localStorage.getItem("user");
-  if (
-    to.matched.some((record) => {
-      record.meta.requiresAuth;
-    })
-  ) {
-    if (store.state.loginForm.status == "success") {
-      console.log("success no redirection");
+  if (to.matched.some((record) => record.meta.requiresAuth)) {
+    if (store.getters.isLoggedIn) {
       next();
       return;
     }
-    if (!user) {
-      console.log("!user");
-
-      next("/login");
-    }
+    next("/login");
   } else {
     next();
   }

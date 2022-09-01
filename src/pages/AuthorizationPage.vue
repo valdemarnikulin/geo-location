@@ -28,7 +28,6 @@
                     </div>
 
                 </form>
-                <button class="btn btn-primary btn-lg" id="btn-submit" @click="loginSubmit">Login with Google!</button>
             </div>
         </div>
     </div>
@@ -36,7 +35,6 @@
 </template>
 
 <script>
-import firebase from 'firebase/compat/app';
 import { mapState } from 'vuex';
 export default {
     data() {
@@ -57,12 +55,6 @@ export default {
                 .then(() => this.$router.push('/MainPage'))
                 .catch(err => console.log(err))
         },
-        loginSubmit() {
-            const provider = new firebase.auth.GoogleAuthProvider()
-            firebase.auth().signInWithRedirect(provider)
-                .catch(console.log)
-            this.$router.push('/')
-        }
     },
     watch:{
         status(newValue,){

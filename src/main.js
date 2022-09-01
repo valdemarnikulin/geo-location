@@ -12,9 +12,6 @@ import axios from "axios";
 import VueAxios from "vue-axios";
 import store from "./store";
 import VueScrollTo from "vue-scrollto";
-import firebase from "firebase/compat/app";
-import "firebase/compat/auth";
-import "firebase/compat/firestore";
 
 import {
   faXmark,
@@ -113,36 +110,16 @@ Vue.use(GmapVue, {
 Vue.config.productionTip = false;
 Vue.use(BootstrapVue);
 Vue.use(IconsPlugin);
-// const token = localStorage.getItem("token");
-// if (token) {
-//   axios.defaults.headers.common["Authorization"] = token;
-// }
+const token = localStorage.getItem("token");
+if (token) {
+  Vue.prototype.$http.defaults.headers.common["Authorization"] = token;
+}
+const app = new Vue({
+  render: (h) => h(App),
+  store,
+  router,
+}).$mount("#app");
 
-const firebaseConfig = {
-  apiKey: "AIzaSyCbJaBlSpAqfhb9dmN2pWQOdzyuSyyvIMA",
-  authDomain: "my-app--maps.firebaseapp.com",
-  projectId: "my-app--maps",
-  storageBucket: "my-app--maps.appspot.com",
-  messagingSenderId: "735582969026",
-  appId: "1:735582969026:web:485be50c62ebeb113aaf5b",
-};
-const firebaseApp = firebase.initializeApp(firebaseConfig);
-const db = firebaseApp.firestore();
-const auth = firebase.auth();
-// firebase().firestore().settings({
-//   experimentalForceLongPolling: true, // this line
-//   useFetchStreams: false, // and this line
-// })
-
-export { auth, db };
-
-const app = firebase.auth().onAuthStateChanged(() =>
-  new Vue({
-    render: (h) => h(App),
-    store,
-    router,
-  }).$mount("#app")
-);
 if (window.Cypress) {
   // only available during E2E tests
   window.app = app;

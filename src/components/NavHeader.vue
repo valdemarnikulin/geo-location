@@ -5,7 +5,6 @@
             <b-button @click="CHANGE_SHOW" class="mr-2 sidebar-toggle opacity-5">
                 <font-awesome-icon style="width: 20px; height: 20px" icon="fa-solid fa-bars" />
             </b-button>
-            <search-box></search-box>
         </div>
         <div class="navbar__right">
             <div class="wrap pr-5">
@@ -38,7 +37,6 @@ import {
 import {
     FontAwesomeIcon
 } from "@fortawesome/vue-fontawesome";
-import SearchBox from '@/components/SearchBox.vue'
 
 import {
     mapMutations, mapState
@@ -49,7 +47,7 @@ export default {
         BNavbar,
         BButton,
         FontAwesomeIcon,
-        SearchBox
+        
     },
     directives: {
         'b-toggle': VBToggle
